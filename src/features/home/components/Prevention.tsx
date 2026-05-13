@@ -12,10 +12,10 @@ import { cn } from "@/lib/Utils";
 
 export function Prevention() {
   return (
-    <section id="prevention" className="relative overflow-hidden py-20 sm:py-24">
+    <section id="prevention" className="relative overflow-hidden py-20 pb-32 sm:py-24 sm:pb-40">
       <div className="absolute inset-0 bg-[linear-gradient(135deg,#FFF1F3_0%,#FFFFFF_42%,#FAD7DD_100%)]" />
       <div
-        className="absolute inset-x-0 bottom-0 h-32 bg-white/50"
+        className="absolute inset-x-0 bottom-0 h-48 bg-white/50"
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

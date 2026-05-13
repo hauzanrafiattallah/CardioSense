@@ -118,7 +118,6 @@ export const featureCards: IconCard[] = [
     icon: ClipboardCheck,
     title: "Skrining Risiko",
     text: "Membantu memperkirakan risiko kardiovaskular berdasarkan data kesehatan dasar.",
-    className: "md:col-span-2 lg:row-span-2",
     highlight: true,
   },
   {
@@ -135,7 +134,6 @@ export const featureCards: IconCard[] = [
     icon: HeartHandshake,
     title: "Panduan Pencegahan",
     text: "Memberikan arahan umum untuk membangun pola hidup yang lebih sehat dan sadar risiko.",
-    className: "md:col-span-2 lg:col-span-1",
   },
 ];
 

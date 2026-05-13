@@ -13,9 +13,9 @@ import {
 
 export function HighRisk() {
   return (
-    <section className="relative overflow-hidden bg-[#C51624] py-20 sm:py-24">
+    <section className="relative overflow-hidden py-20 sm:py-24" style={{ background: "linear-gradient(135deg, #E8293A 0%, #C51624 50%, #D12232 100%)" }}>
       <div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.2),transparent_34%),linear-gradient(135deg,#C51624_0%,#9E111C_100%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.20),transparent_50%),radial-gradient(ellipse_at_bottom_right,rgba(255,200,200,0.12),transparent_55%)]"
         aria-hidden="true"
       />
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

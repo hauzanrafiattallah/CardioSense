@@ -50,7 +50,7 @@ export function Education() {
                   visible: { opacity: 1, y: 0 },
                 }}
               >
-                <Card className="group h-full p-6">
+                <Card className="group flex h-full flex-col p-6">
                   <div
                     className={
                       index === 2
@@ -63,12 +63,12 @@ export function Education() {
                   <h3 className="font-heading text-xl font-bold text-[#111418]">
                     {topic.title}
                   </h3>
-                  <p className="mt-4 min-h-28 leading-7 text-[#6B7280]">
+                  <p className="mt-4 leading-7 text-[#6B7280]">
                     {topic.text}
                   </p>
                   <a
                     href="#education"
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#C51624] transition-colors hover:text-[#F43F4E]"
+                    className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[#C51624] transition-colors hover:text-[#F43F4E]"
                   >
                     {educationLinkLabel}
                     <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
