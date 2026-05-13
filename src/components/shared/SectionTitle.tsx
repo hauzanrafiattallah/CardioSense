@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/Utils";
 
-type SectionHeadingProps = {
+type SectionTitleProps = {
   eyebrow?: string;
   title: string;
   subtitle?: string;
@@ -9,14 +9,14 @@ type SectionHeadingProps = {
   className?: string;
 };
 
-export function SectionHeading({
+export function SectionTitle({
   eyebrow,
   title,
   subtitle,
   align = "center",
   dark = false,
   className,
-}: SectionHeadingProps) {
+}: SectionTitleProps) {
   return (
     <div
       className={cn(

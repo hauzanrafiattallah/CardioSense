@@ -1,30 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, HeartPulse, ShieldCheck } from "lucide-react";
 
-import { SectionHeading } from "@/components/section-heading";
+import { MotionCard } from "@/components/shared/MotionCard";
+import { SectionTitle } from "@/components/shared/SectionTitle";
 import { Card } from "@/components/ui/card";
+import { problemCards, problemContent } from "@/features/home/data/HomeData";
 
-const cards = [
-  {
-    icon: HeartPulse,
-    title: "Symptoms Are Often Silent",
-    text: "Some cardiovascular risks can progress without obvious early symptoms.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Risk Factors Can Be Managed",
-    text: "Blood pressure, cholesterol, smoking, activity level, stress, and diet can influence long-term heart health.",
-  },
-  {
-    icon: Activity,
-    title: "Awareness Supports Prevention",
-    text: "Early screening helps users understand when lifestyle changes or medical consultation may be needed.",
-  },
-];
-
-export function WhyScreeningSection() {
+export function Problem() {
   return (
     <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -34,10 +17,10 @@ export function WhyScreeningSection() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.55 }}
         >
-          <SectionHeading
-            eyebrow="Early awareness"
-            title="Why Early Screening Matters"
-            subtitle="Cardiovascular problems often develop gradually. Understanding risk factors early can help users take preventive action sooner."
+          <SectionTitle
+            eyebrow={problemContent.eyebrow}
+            title={problemContent.title}
+            subtitle={problemContent.subtitle}
           />
         </motion.div>
 
@@ -51,17 +34,16 @@ export function WhyScreeningSection() {
           }}
           className="mt-12 grid gap-5 md:grid-cols-3"
         >
-          {cards.map((card) => {
+          {problemCards.map((card) => {
             const Icon = card.icon;
+
             return (
-              <motion.div
+              <MotionCard
                 key={card.title}
                 variants={{
                   hidden: { opacity: 0, y: 28 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -8 }}
               >
                 <Card className="group h-full p-7">
                   <motion.div
@@ -75,7 +57,7 @@ export function WhyScreeningSection() {
                   </h3>
                   <p className="mt-4 leading-7 text-[#6B7280]">{card.text}</p>
                 </Card>
-              </motion.div>
+              </MotionCard>
             );
           })}
         </motion.div>

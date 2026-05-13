@@ -1,58 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
+
+import { MotionCard } from "@/components/shared/MotionCard";
+import { SectionTitle } from "@/components/shared/SectionTitle";
 import {
-  Apple,
-  CigaretteOff,
-  Dumbbell,
-  Moon,
-  ShieldCheck,
-  Sparkles,
-  Stethoscope,
-} from "lucide-react";
+  preventionContent,
+  preventionItems,
+} from "@/features/home/data/HomeData";
+import { cn } from "@/lib/Utils";
 
-import { SectionHeading } from "@/components/section-heading";
-import { cn } from "@/lib/utils";
-
-const habits = [
-  {
-    icon: Apple,
-    text: "Eat balanced meals with vegetables, fruits, fiber, and lean protein",
-  },
-  {
-    icon: ShieldCheck,
-    text: "Reduce excessive salt, sugar, and saturated fat",
-  },
-  {
-    icon: Dumbbell,
-    text: "Stay physically active",
-    cyan: true,
-  },
-  {
-    icon: CigaretteOff,
-    text: "Avoid smoking",
-  },
-  {
-    icon: Sparkles,
-    text: "Manage stress",
-    cyan: true,
-  },
-  {
-    icon: Moon,
-    text: "Sleep regularly",
-  },
-  {
-    icon: Stethoscope,
-    text: "Check blood pressure and cholesterol periodically",
-  },
-  {
-    icon: ShieldCheck,
-    text: "Consult healthcare professionals when risk factors are present",
-    cyan: true,
-  },
-];
-
-export function PreventionSection() {
+export function Prevention() {
   return (
     <section id="prevention" className="relative overflow-hidden py-20 sm:py-24">
       <div className="absolute inset-0 bg-[linear-gradient(135deg,#FFF1F3_0%,#FFFFFF_42%,#FAD7DD_100%)]" />
@@ -67,10 +25,10 @@ export function PreventionSection() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.55 }}
         >
-          <SectionHeading
-            eyebrow="Prevention guide"
-            title="Build Habits That Protect Your Heart"
-            subtitle="Small daily decisions can support long-term cardiovascular health and make prevention feel practical."
+          <SectionTitle
+            eyebrow={preventionContent.eyebrow}
+            title={preventionContent.title}
+            subtitle={preventionContent.subtitle}
           />
         </motion.div>
 
@@ -84,16 +42,16 @@ export function PreventionSection() {
           }}
           className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {habits.map((habit) => {
+          {preventionItems.map((habit) => {
             const Icon = habit.icon;
+
             return (
-              <motion.div
+              <MotionCard
                 key={habit.text}
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.45 }}
                 whileHover={{ y: -6 }}
                 className="group"
               >
@@ -111,7 +69,7 @@ export function PreventionSection() {
                   </motion.div>
                   <p className="leading-7 text-[#374151]">{habit.text}</p>
                 </div>
-              </motion.div>
+              </MotionCard>
             );
           })}
         </motion.div>

@@ -1,41 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  Brain,
-  HeartCrack,
-  HeartPulse,
-  Waves,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-import { SectionHeading } from "@/components/section-heading";
+import { MotionCard } from "@/components/shared/MotionCard";
+import { SectionTitle } from "@/components/shared/SectionTitle";
 import { Card } from "@/components/ui/card";
+import {
+  educationCards,
+  educationContent,
+  educationLinkLabel,
+} from "@/features/home/data/HomeData";
 
-const topics = [
-  {
-    icon: HeartPulse,
-    title: "Coronary Heart Disease",
-    text: "A condition related to reduced blood flow to the heart, often associated with narrowed arteries.",
-  },
-  {
-    icon: Waves,
-    title: "Hypertension",
-    text: "High blood pressure can increase the workload of the heart and raise cardiovascular risk.",
-  },
-  {
-    icon: Brain,
-    title: "Stroke",
-    text: "A serious condition related to disrupted blood flow to the brain, often connected to vascular health.",
-  },
-  {
-    icon: HeartCrack,
-    title: "Heart Failure",
-    text: "A condition where the heart cannot pump blood as effectively as the body needs.",
-  },
-];
-
-export function EducationSection() {
+export function Education() {
   return (
     <section id="education" className="bg-[#FFF8F9] py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -45,10 +22,10 @@ export function EducationSection() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.55 }}
         >
-          <SectionHeading
-            eyebrow="Education"
-            title="Learn About Cardiovascular Health"
-            subtitle="Understanding common cardiovascular conditions can help users recognize risk and make better health decisions."
+          <SectionTitle
+            eyebrow={educationContent.eyebrow}
+            title={educationContent.title}
+            subtitle={educationContent.subtitle}
           />
         </motion.div>
 
@@ -62,17 +39,16 @@ export function EducationSection() {
           }}
           className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {topics.map((topic, index) => {
+          {educationCards.map((topic, index) => {
             const Icon = topic.icon;
+
             return (
-              <motion.div
+              <MotionCard
                 key={topic.title}
                 variants={{
                   hidden: { opacity: 0, y: 28 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                transition={{ duration: 0.5 }}
-                whileHover={{ y: -8 }}
               >
                 <Card className="group h-full p-6">
                   <div
@@ -94,11 +70,11 @@ export function EducationSection() {
                     href="#education"
                     className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#C51624] transition-colors hover:text-[#F43F4E]"
                   >
-                    Learn more
+                    {educationLinkLabel}
                     <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </a>
                 </Card>
-              </motion.div>
+              </MotionCard>
             );
           })}
         </motion.div>

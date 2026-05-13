@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowRight, HeartPulse, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ctaContent } from "@/features/home/data/HomeData";
 
-export function FinalCtaSection() {
+export function CTA() {
   return (
     <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -30,16 +31,15 @@ export function FinalCtaSection() {
                 <HeartPulse className="size-8" />
               </div>
               <h2 className="text-balance font-heading text-3xl font-bold leading-tight text-[#111418] sm:text-4xl lg:text-5xl">
-                Ready to Understand Your Heart Risk?
+                {ctaContent.title}
               </h2>
               <p className="mt-5 text-base leading-8 text-[#6B7280] sm:text-lg">
-                Start with a simple screening experience and learn how to
-                protect your cardiovascular health through better daily habits.
+                {ctaContent.description}
               </p>
               <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                 <Button asChild size="lg" className="w-full sm:w-auto">
                   <a href="#screening">
-                    Start Screening
+                    {ctaContent.primaryCta}
                     <ArrowRight />
                   </a>
                 </Button>
@@ -50,7 +50,7 @@ export function FinalCtaSection() {
                   className="w-full sm:w-auto"
                 >
                   <a href="#prevention">
-                    View Prevention Tips
+                    {ctaContent.secondaryCta}
                     <ShieldCheck />
                   </a>
                 </Button>

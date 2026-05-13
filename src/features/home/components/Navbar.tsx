@@ -5,15 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, HeartPulse, Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-
-const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "Screening", href: "#screening" },
-  { label: "Education", href: "#education" },
-  { label: "Prevention", href: "#prevention" },
-  { label: "FAQ", href: "#faq" },
-];
+import { navItems } from "@/features/home/data/NavData";
+import { cn } from "@/lib/Utils";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +35,7 @@ export function Navbar() {
         <a
           href="#home"
           className="group flex items-center gap-3"
-          aria-label="CardioSense home"
+          aria-label="Beranda CardioSense"
           onClick={() => setIsOpen(false)}
         >
           <span className="flex size-11 items-center justify-center rounded-2xl bg-[#C51624] text-white shadow-[0_16px_34px_rgba(197,22,36,0.24)] transition-transform duration-300 group-hover:-translate-y-0.5">
@@ -69,7 +62,7 @@ export function Navbar() {
         <div className="hidden lg:block">
           <Button asChild>
             <a href="#screening">
-              Start Screening
+              Mulai Skrining
               <ArrowRight />
             </a>
           </Button>
@@ -78,7 +71,7 @@ export function Navbar() {
         <button
           type="button"
           className="inline-flex size-11 cursor-pointer items-center justify-center rounded-2xl border border-[#FAD7DD] bg-white text-[#111418] shadow-[0_12px_30px_rgba(197,22,36,0.08)] transition-colors hover:text-[#C51624] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F43F4E]/40 lg:hidden"
-          aria-label="Toggle navigation menu"
+          aria-label="Buka atau tutup menu navigasi"
           aria-expanded={isOpen}
           onClick={() => setIsOpen((value) => !value)}
         >
@@ -109,7 +102,7 @@ export function Navbar() {
             </div>
             <Button asChild className="mt-3 w-full">
               <a href="#screening" onClick={() => setIsOpen(false)}>
-                Start Screening
+                Mulai Skrining
                 <ArrowRight />
               </a>
             </Button>

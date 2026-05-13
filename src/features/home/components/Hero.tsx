@@ -6,42 +6,18 @@ import {
   ArrowRight,
   BookOpen,
   HeartPulse,
-  ShieldCheck,
   Sparkles,
-  Stethoscope,
 } from "lucide-react";
 
+import { RiskBadge } from "@/components/shared/RiskBadge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { heroBadges, heroContent, heroMetrics } from "@/features/home/data/HomeData";
+import { cn } from "@/lib/Utils";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 26 },
   visible: { opacity: 1, y: 0 },
 };
-
-const metricCards = [
-  {
-    title: "Heart Rate",
-    value: "78 BPM",
-    icon: HeartPulse,
-    className: "left-3 top-8 sm:left-5 lg:-left-8",
-    delay: 0,
-  },
-  {
-    title: "Blood Pressure",
-    value: "Check ready",
-    icon: Stethoscope,
-    className: "right-3 top-24 sm:right-4 lg:-right-4",
-    delay: 0.25,
-  },
-  {
-    title: "Risk Insight",
-    value: "Ready",
-    icon: ShieldCheck,
-    className: "bottom-8 left-6 sm:left-14",
-    delay: 0.45,
-  },
-];
 
 function AnimatedEcgLine() {
   return (
@@ -121,9 +97,9 @@ function HeroVisual() {
 
           <div className="mt-8 w-full rounded-[2rem] border border-white/80 bg-white/84 p-4 shadow-[0_18px_44px_rgba(197,22,36,0.08)] backdrop-blur-md">
             <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-[0.14em] text-[#C51624]">
-              <span>Live pulse preview</span>
+              <span>{heroContent.visualLabel}</span>
               <span className="rounded-full bg-[#22C55E]/10 px-2 py-1 text-[#22C55E]">
-                steady
+                {heroContent.visualStatus}
               </span>
             </div>
             <AnimatedEcgLine />
@@ -131,7 +107,7 @@ function HeroVisual() {
         </div>
       </motion.div>
 
-      {metricCards.map((card) => {
+      {heroMetrics.map((card) => {
         const Icon = card.icon;
         return (
           <motion.div
@@ -170,7 +146,7 @@ function HeroVisual() {
   );
 }
 
-export function HeroSection() {
+export function Hero() {
   return (
     <section
       id="home"
@@ -180,7 +156,7 @@ export function HeroSection() {
         className="absolute left-1/2 top-24 h-[520px] w-[920px] -translate-x-1/2 rounded-[45%_55%_60%_40%/40%_42%_58%_60%] bg-[#FAD7DD]/42 blur-3xl"
         aria-hidden="true"
       />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.02fr_0.98fr] lg:px-8">
         <motion.div
           variants={{
             hidden: {},
@@ -196,7 +172,7 @@ export function HeroSection() {
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#FAD7DD] bg-white/76 px-4 py-2 text-sm font-bold text-[#C51624] shadow-[0_12px_34px_rgba(197,22,36,0.08)] backdrop-blur"
           >
             <Activity className="size-4 text-[#35B8E5]" />
-            AI-Powered Cardiovascular Risk Screening
+            {heroContent.eyebrow}
           </motion.div>
 
           <motion.h1
@@ -204,7 +180,7 @@ export function HeroSection() {
             transition={{ duration: 0.62 }}
             className="text-balance font-heading text-4xl font-extrabold leading-[1.05] text-[#111418] sm:text-5xl lg:text-[64px]"
           >
-            Understand Your Heart Risk Before It Becomes Serious
+            {heroContent.title}
           </motion.h1>
 
           <motion.p
@@ -212,9 +188,7 @@ export function HeroSection() {
             transition={{ duration: 0.62 }}
             className="mt-6 max-w-2xl text-base leading-8 text-[#6B7280] sm:text-lg"
           >
-            CardioSense helps you estimate early cardiovascular risk from
-            simple health indicators and gives clear educational guidance to
-            support better heart-health decisions.
+            {heroContent.description}
           </motion.p>
 
           <motion.div
@@ -224,7 +198,7 @@ export function HeroSection() {
           >
             <Button asChild size="lg" className="w-full sm:w-auto">
               <a href="#screening">
-                Start Risk Screening
+                {heroContent.primaryCta}
                 <ArrowRight />
               </a>
             </Button>
@@ -235,7 +209,7 @@ export function HeroSection() {
               className="w-full sm:w-auto"
             >
               <a href="#education">
-                Explore Heart Education
+                {heroContent.secondaryCta}
                 <BookOpen />
               </a>
             </Button>
@@ -246,22 +220,11 @@ export function HeroSection() {
             transition={{ duration: 0.62 }}
             className="mt-8 flex flex-wrap gap-3"
           >
-            {["Fast Screening", "Educational Guidance", "Prevention Focused"].map(
-              (badge, index) => (
-                <span
-                  key={badge}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#FAD7DD]/80 bg-white/78 px-4 py-2 text-sm font-semibold text-[#374151] shadow-sm"
-                >
-                  <span
-                    className={cn(
-                      "size-2.5 rounded-full",
-                      index === 1 ? "bg-[#35B8E5]" : "bg-[#F43F4E]",
-                    )}
-                  />
-                  {badge}
-                </span>
-              ),
-            )}
+            {heroBadges.map((badge) => (
+              <RiskBadge key={badge.label} tone={badge.tone}>
+                {badge.label}
+              </RiskBadge>
+            ))}
           </motion.div>
         </motion.div>
 

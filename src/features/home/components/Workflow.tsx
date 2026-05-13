@@ -1,30 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BookOpen, ClipboardList, HeartPulse, SearchCheck } from "lucide-react";
 
-import { SectionHeading } from "@/components/section-heading";
+import { SectionTitle } from "@/components/shared/SectionTitle";
+import { workflowContent, workflowSteps } from "@/features/home/data/HomeData";
 
-const steps = [
-  {
-    icon: ClipboardList,
-    title: "Enter Health Data",
-  },
-  {
-    icon: SearchCheck,
-    title: "System Reviews Risk Indicators",
-  },
-  {
-    icon: HeartPulse,
-    title: "View Screening Result",
-  },
-  {
-    icon: BookOpen,
-    title: "Read Education and Prevention Guidance",
-  },
-];
-
-export function HowItWorksSection() {
+export function Workflow() {
   return (
     <section className="bg-white py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -34,10 +15,10 @@ export function HowItWorksSection() {
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.55 }}
         >
-          <SectionHeading
-            eyebrow="Simple flow"
-            title="How CardioSense Works"
-            subtitle="A calm four-step journey from health indicators to educational guidance."
+          <SectionTitle
+            eyebrow={workflowContent.eyebrow}
+            title={workflowContent.title}
+            subtitle={workflowContent.subtitle}
           />
         </motion.div>
 
@@ -65,8 +46,9 @@ export function HowItWorksSection() {
             }}
             className="grid gap-6 lg:grid-cols-4"
           >
-            {steps.map((step, index) => {
+            {workflowSteps.map((step, index) => {
               const Icon = step.icon;
+
               return (
                 <motion.div
                   key={step.title}
@@ -82,7 +64,7 @@ export function HowItWorksSection() {
                   </div>
                   <div>
                     <div className="mb-2 inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold text-[#C51624] lg:bg-[#FFF1F3]">
-                      Step {index + 1}
+                      Langkah {index + 1}
                     </div>
                     <h3 className="font-heading text-xl font-bold leading-tight text-[#111418]">
                       {step.title}

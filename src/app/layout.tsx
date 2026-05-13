@@ -16,9 +16,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "CardioSense | Early Cardiovascular Risk Screening",
+  title: "CardioSense | Skrining Awal Risiko Kardiovaskular",
   description:
-    "Detect cardiovascular risk earlier, understand your heart health, and learn how to prevent future complications with CardioSense.",
+    "Kenali estimasi risiko kardiovaskular lebih awal dan pelajari edukasi pencegahan bersama CardioSense.",
 };
 
 export default function RootLayout({
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col overflow-x-hidden">

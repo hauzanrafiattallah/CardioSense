@@ -1,0 +1,13 @@
+export { Navbar } from "@/features/home/components/Navbar";
+export { Hero } from "@/features/home/components/Hero";
+export { Problem } from "@/features/home/components/Problem";
+export { Features } from "@/features/home/components/Features";
+export { Screening } from "@/features/home/components/Screening";
+export { Education } from "@/features/home/components/Education";
+export { Prevention } from "@/features/home/components/Prevention";
+export { HighRisk } from "@/features/home/components/HighRisk";
+export { Workflow } from "@/features/home/components/Workflow";
+export { FAQ } from "@/features/home/components/FAQ";
+export { CTA } from "@/features/home/components/CTA";
+export { Footer } from "@/features/home/components/Footer";
+export { Chatbot } from "@/features/home/components/Chatbot";

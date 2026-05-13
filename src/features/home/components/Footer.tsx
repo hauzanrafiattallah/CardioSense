@@ -1,12 +1,8 @@
 import { HeartPulse } from "lucide-react";
 
-const quickLinks = [
-  { label: "Home", href: "#home" },
-  { label: "Screening", href: "#screening" },
-  { label: "Education", href: "#education" },
-  { label: "Prevention", href: "#prevention" },
-  { label: "FAQ", href: "#faq" },
-];
+import { Disclaimer } from "@/components/shared/Disclaimer";
+import { footerContent } from "@/features/home/data/HomeData";
+import { footerLinks } from "@/features/home/data/NavData";
 
 export function Footer() {
   return (
@@ -20,15 +16,16 @@ export function Footer() {
             <span className="font-heading text-xl font-bold">CardioSense</span>
           </a>
           <p className="mt-5 max-w-sm leading-7 text-white/68">
-            A cardiovascular risk screening and education platform for early
-            awareness and prevention.
+            {footerContent.description}
           </p>
         </div>
 
         <div>
-          <h3 className="font-heading text-base font-semibold">Quick links</h3>
+          <h3 className="font-heading text-base font-semibold">
+            {footerContent.linksTitle}
+          </h3>
           <div className="mt-4 grid gap-3">
-            {quickLinks.map((link) => (
+            {footerLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -42,17 +39,15 @@ export function Footer() {
 
         <div>
           <h3 className="font-heading text-base font-semibold">
-            Medical disclaimer
+            {footerContent.disclaimerTitle}
           </h3>
-          <p className="mt-4 rounded-3xl border border-white/10 bg-white/6 p-5 text-sm leading-7 text-white/68">
-            This website provides educational information and early screening
-            support only. It is not intended to replace professional medical
-            advice, diagnosis, or treatment.
-          </p>
+          <Disclaimer variant="dark" className="mt-4">
+            {footerContent.disclaimer}
+          </Disclaimer>
         </div>
       </div>
       <div className="mx-auto mt-10 max-w-7xl px-4 text-sm text-white/48 sm:px-6 lg:px-8">
-        © 2026 CardioSense. All rights reserved.
+        {footerContent.copyright}
       </div>
     </footer>
   );
