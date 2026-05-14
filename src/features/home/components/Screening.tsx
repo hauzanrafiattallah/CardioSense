@@ -39,7 +39,7 @@ export function Screening() {
           />
         </motion.div>
 
-        <div className="mt-12 grid items-start gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Form
             eyebrow={screeningContent.formEyebrow}
             title={screeningContent.formTitle}

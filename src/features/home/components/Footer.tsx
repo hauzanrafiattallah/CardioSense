@@ -6,7 +6,7 @@ import { footerLinks } from "@/features/home/data/NavData";
 
 export function Footer() {
   return (
-    <footer className="border-t border-[#FAD7DD]/80 bg-[#111418] py-12 text-white">
+    <footer className="border-t border-[#FAD7DD]/80 bg-[#91222b] py-12 text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.8fr_1.1fr] lg:px-8">
         <div>
           <a href="#home" className="inline-flex items-center gap-3">

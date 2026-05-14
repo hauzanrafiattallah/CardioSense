@@ -23,14 +23,16 @@ export function Result({ result, hasSubmitted }: ResultProps) {
         whileInView={{ opacity: 1, scale: 1, y: 0 }}
         viewport={{ once: true, amount: 0.35 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        className="h-full"
       >
-        <Card className="relative overflow-hidden p-6">
+        <Card className="relative h-full overflow-hidden p-6">
           <div
             className="absolute -right-14 -top-12 size-44 rounded-[4rem] bg-[#FAD7DD]/65"
             aria-hidden="true"
           />
-          <div className="relative flex min-h-[430px] flex-col justify-center">
-            <div className="mb-6 flex size-16 items-center justify-center rounded-3xl bg-[#FFF1F3] text-[#C51624]">
+          <div className="relative flex h-full flex-col">
+            {/* Header */}
+            <div className="mb-5 flex size-16 items-center justify-center rounded-3xl bg-[#FFF1F3] text-[#C51624]">
               <ClipboardCheck className="size-8" />
             </div>
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#C51624]">
@@ -39,13 +41,79 @@ export function Result({ result, hasSubmitted }: ResultProps) {
             <h3 className="mt-2 font-heading text-3xl font-bold text-[#111418]">
               {hasSubmitted ? "Lengkapi data yang diperlukan" : "Siap Dicek"}
             </h3>
-            <p className="mt-4 leading-7 text-[#6B7280]">
-              Isi form di sebelah kiri, lalu klik Cek Risiko untuk melihat
-              estimasi risiko awal dan faktor yang perlu diperhatikan.
+            <p className="mt-3 text-sm leading-6 text-[#6B7280]">
+              Isi form di sebelah kiri, lalu klik{" "}
+              <span className="font-semibold text-[#C51624]">Cek Risiko</span>{" "}
+              untuk melihat estimasi risiko awal dan faktor yang perlu
+              diperhatikan.
             </p>
-            <div className="mt-7 rounded-3xl border border-[#FAD7DD]/80 bg-[#FFF8F9] p-5 text-sm leading-6 text-[#374151]">
-              Hasil yang muncul bersifat edukatif dan belum terhubung ke
-              backend. Integrasi API dapat diarahkan dari handler submit form.
+
+            {/* Risk level preview */}
+            <div className="mt-6">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-[#9CA3AF]">
+                Kategori hasil estimasi
+              </p>
+              <div className="grid gap-2">
+                {[
+                  {
+                    dot: "bg-[#22C55E]",
+                    bg: "bg-[#22C55E]/8 border-[#22C55E]/20",
+                    label: "Risiko Rendah",
+                    desc: "Profil kesehatan baik, pertahankan gaya hidup sehat.",
+                    text: "text-[#166534]",
+                  },
+                  {
+                    dot: "bg-[#F59E0B]",
+                    bg: "bg-[#F59E0B]/8 border-[#F59E0B]/20",
+                    label: "Risiko Sedang",
+                    desc: "Ada faktor yang perlu diperhatikan dan dipantau.",
+                    text: "text-[#92400E]",
+                  },
+                  {
+                    dot: "bg-[#C51624]",
+                    bg: "bg-[#C51624]/8 border-[#C51624]/20",
+                    label: "Risiko Tinggi",
+                    desc: "Segera konsultasi dengan tenaga medis profesional.",
+                    text: "text-[#7F1D1D]",
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className={cn(
+                      "flex items-start gap-3 rounded-2xl border px-4 py-3",
+                      item.bg,
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "mt-1.5 size-2 shrink-0 rounded-full",
+                        item.dot,
+                      )}
+                    />
+                    <div>
+                      <p
+                        className={cn(
+                          "text-xs font-bold uppercase tracking-wide",
+                          item.text,
+                        )}
+                      >
+                        {item.label}
+                      </p>
+                      <p className="mt-0.5 text-xs leading-5 text-[#6B7280]">
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="mt-auto pt-5">
+              <div className="rounded-2xl border border-[#FAD7DD]/80 bg-[#FFF8F9] px-4 py-3 text-xs leading-5 text-[#9CA3AF]">
+                ⚠️ Hasil bersifat edukatif. Bukan pengganti diagnosis medis
+                profesional.
+              </div>
             </div>
           </div>
         </Card>
@@ -61,8 +129,9 @@ export function Result({ result, hasSubmitted }: ResultProps) {
       whileInView={{ opacity: 1, scale: 1, y: 0 }}
       viewport={{ once: true, amount: 0.35 }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
     >
-      <Card className="relative overflow-hidden p-6">
+      <Card className="relative h-full overflow-hidden p-6">
         <div
           className="absolute -right-14 -top-12 size-44 rounded-[4rem] bg-[#FAD7DD]/65"
           aria-hidden="true"
@@ -90,7 +159,7 @@ export function Result({ result, hasSubmitted }: ResultProps) {
             </div>
           </div>
 
-          <div className="mt-8 rounded-[2rem] bg-[#FFF8F9] p-5">
+          <div className="mt-8 rounded-4xl bg-[#FFF8F9] p-5">
             <div className="mb-3 flex items-center justify-between text-sm font-semibold">
               <span className="text-[#374151]">{result.overviewLabel}</span>
               <span className="text-[#C51624]">{result.percentage}%</span>
@@ -101,7 +170,10 @@ export function Result({ result, hasSubmitted }: ResultProps) {
                 whileInView={{ width: `${result.percentage}%` }}
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                className={cn("h-full rounded-full", riskMeta.progressClassName)}
+                className={cn(
+                  "h-full rounded-full",
+                  riskMeta.progressClassName,
+                )}
               />
             </div>
           </div>

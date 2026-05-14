@@ -41,7 +41,7 @@ export function Features() {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.55 }}
           >
-            <Card className="relative h-full min-h-90 overflow-hidden bg-[linear-gradient(145deg,#C51624_0%,#E8293A_60%,#F43F4E_100%)] p-8 text-white">
+            <Card className="relative flex h-full min-h-90 flex-col justify-between overflow-hidden bg-[linear-gradient(145deg,#C51624_0%,#E8293A_60%,#F43F4E_100%)] p-8 text-white">
               {/* Decorative glows */}
               <div
                 className="absolute -right-12 -top-12 size-52 rounded-full bg-white/10 blur-2xl"
@@ -56,15 +56,35 @@ export function Features() {
                 aria-hidden="true"
               />
 
-              <div className="relative mb-6 flex size-14 items-center justify-center rounded-3xl bg-white/20 text-white">
-                <HighlightIcon className="size-7" />
-              </div>
-              <div className="relative">
+              <div className="relative flex flex-1 flex-col">
+                <div className="mb-6 flex size-14 items-center justify-center rounded-3xl bg-white/20 text-white">
+                  <HighlightIcon className="size-7" />
+                </div>
                 <h3 className="font-heading text-2xl font-bold text-white">
                   {highlight.title}
                 </h3>
-                <p className="mt-4 leading-7 text-white/82">{highlight.text}</p>
-                <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white/15 p-4 text-sm font-semibold text-white backdrop-blur">
+                <p className="mt-3 leading-7 text-white/82">{highlight.text}</p>
+
+                {/* List keunggulan fitur */}
+                <div className="my-6 grid gap-2.5">
+                  {[
+                    "Analisis parameter instan berbasis AI",
+                    "Memetakan 6+ indikator kesehatan utama",
+                    "Rekomendasi gaya hidup & pencegahan",
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white/90 backdrop-blur-sm"
+                    >
+                      <div className="flex size-4 shrink-0 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold text-white">
+                        ✓
+                      </div>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-auto flex items-center gap-3 rounded-2xl bg-white/15 p-4 text-sm font-semibold text-white backdrop-blur">
                   <ShieldCheck className="size-5 shrink-0" />
                   Indikator awal, bukan diagnosis
                 </div>
