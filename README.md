@@ -2,6 +2,15 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Create a Groq API key, then add it to `.env.local`:
+
+```bash
+GROQ_API_KEY=your_new_groq_api_key
+GROQ_MODEL=openai/gpt-oss-20b
+```
+
+Do not commit `.env.local`. If a key is ever pasted in chat, logs, or code, revoke it in the Groq Console and create a new one.
+
 First, run the development server:
 
 ```bash

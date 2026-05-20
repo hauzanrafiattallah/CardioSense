@@ -6,3 +6,8 @@ export type ChatMessage = {
   content: string;
   createdAt: Date;
 };
+
+export type ChatApiResponse = {
+  message?: string;
+  error?: string;
+};

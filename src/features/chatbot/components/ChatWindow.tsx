@@ -43,7 +43,7 @@ export function ChatWindow({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 18, scale: 0.94 }}
       transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed bottom-24 left-4 right-4 flex h-[min(560px,70dvh)] origin-bottom-right flex-col overflow-hidden rounded-3xl border border-[#FAD7DD] bg-[#FFF8F9] shadow-[0_28px_90px_rgba(197,22,36,0.22)] sm:left-auto sm:right-6 sm:w-[380px]"
+      className="fixed bottom-24 left-4 right-4 flex h-[min(560px,70dvh)] max-w-[calc(100vw-2rem)] origin-bottom-right flex-col overflow-hidden rounded-3xl border border-[#FAD7DD] bg-[#FFF8F9] shadow-[0_28px_90px_rgba(197,22,36,0.22)] sm:left-auto sm:right-6 sm:w-[430px] md:w-[480px] lg:w-[520px]"
     >
       <ChatHeader onClose={onClose} />
 

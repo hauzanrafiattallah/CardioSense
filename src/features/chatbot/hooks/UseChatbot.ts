@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  getMockAssistantResponse,
-  initialAssistantMessage,
-} from "@/features/chatbot/data/ChatData";
-import type { ChatMessage } from "@/features/chatbot/types/Chatbot";
+import { initialAssistantMessage } from "@/features/chatbot/data/ChatData";
+import type {
+  ChatApiResponse,
+  ChatMessage,
+} from "@/features/chatbot/types/Chatbot";
+
+const CHAT_ERROR_MESSAGE =
+  "Maaf, Asisten CardioSense sedang tidak tersedia. Untuk keluhan mendesak seperti nyeri dada berat, sesak napas, atau pingsan, segera hubungi layanan darurat atau fasilitas kesehatan terdekat.";
 
 function createChatMessage(
   role: ChatMessage["role"],
@@ -30,26 +33,55 @@ export function useChatbot() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const openChat = useCallback(() => setIsOpen(true), []);
   const closeChat = useCallback(() => setIsOpen(false), []);
   const toggleChat = useCallback(() => setIsOpen((value) => !value), []);
 
-  const appendMockResponse = useCallback((content: string) => {
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
-
+  const requestAssistantResponse = useCallback(async (nextMessages: ChatMessage[]) => {
+    abortControllerRef.current?.abort();
     setIsTyping(true);
-    typingTimeoutRef.current = setTimeout(() => {
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: nextMessages }),
+        signal: abortController.signal,
+      });
+
+      const data = (await response.json()) as ChatApiResponse;
+      const assistantMessage = data.message;
+
+      if (!response.ok || !assistantMessage) {
+        throw new Error(data.error ?? "Chat request failed");
+      }
+
       setMessages((currentMessages) => [
         ...currentMessages,
-        createChatMessage("assistant", getMockAssistantResponse(content)),
+        createChatMessage("assistant", assistantMessage),
       ]);
-      setIsTyping(false);
-      typingTimeoutRef.current = null;
-    }, 760);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        createChatMessage("assistant", CHAT_ERROR_MESSAGE),
+      ]);
+    } finally {
+      if (abortControllerRef.current === abortController) {
+        abortControllerRef.current = null;
+        setIsTyping(false);
+      }
+    }
   }, []);
 
   const sendMessage = useCallback(
@@ -60,15 +92,15 @@ export function useChatbot() {
         return;
       }
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        createChatMessage("user", content),
-      ]);
+      const userMessage = createChatMessage("user", content);
+      const nextMessages = [...messages, userMessage];
+
+      setMessages(nextMessages);
       setInputValue("");
-      appendMockResponse(content);
       setIsOpen(true);
+      void requestAssistantResponse(nextMessages);
     },
-    [appendMockResponse, inputValue, isTyping],
+    [inputValue, isTyping, messages, requestAssistantResponse],
   );
 
   const sendQuickPrompt = useCallback(
@@ -80,9 +112,7 @@ export function useChatbot() {
 
   useEffect(() => {
     return () => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
+      abortControllerRef.current?.abort();
     };
   }, []);
 
