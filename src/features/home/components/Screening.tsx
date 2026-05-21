@@ -18,6 +18,8 @@ export function Screening() {
     errors,
     result,
     hasSubmitted,
+    isSubmitting,
+    submitError,
     updateValue,
     submitScreening,
     resetScreening,
@@ -49,11 +51,17 @@ export function Screening() {
             fields={screeningFields}
             values={values}
             errors={errors}
+            isSubmitting={isSubmitting}
             onChange={updateValue}
             onSubmit={submitScreening}
             onReset={resetScreening}
           />
-          <Result result={result} hasSubmitted={hasSubmitted} />
+          <Result
+            result={result}
+            hasSubmitted={hasSubmitted}
+            isSubmitting={isSubmitting}
+            submitError={submitError}
+          />
         </div>
 
         <motion.div

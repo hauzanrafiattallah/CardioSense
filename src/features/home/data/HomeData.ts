@@ -145,7 +145,7 @@ export const screeningContent = {
   formEyebrow: "Form skrining",
   formTitle: "Isi Data Kesehatan",
   formDescription:
-    "Lengkapi data dasar berikut untuk mendapatkan estimasi risiko awal. Nilai tekanan darah menggunakan satuan mmHg.",
+    "Model memakai usia, tekanan darah, dan status kolesterol. Faktor gaya hidup tetap diisi sebagai konteks edukasi hasil.",
   submitLabel: "Cek Risiko",
   resetLabel: "Kosongkan Form",
   disclaimer:

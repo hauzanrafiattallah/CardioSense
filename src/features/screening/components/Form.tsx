@@ -23,8 +23,9 @@ type FormProps = {
   resetLabel: string;
   values: ScreeningFormValues;
   errors: ScreeningErrors;
+  isSubmitting: boolean;
   onChange: (name: ScreeningFieldName, value: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   onReset: () => void;
 };
 
@@ -37,13 +38,14 @@ export function Form({
   resetLabel,
   values,
   errors,
+  isSubmitting,
   onChange,
   onSubmit,
   onReset,
 }: FormProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSubmit();
+    void onSubmit();
   };
 
   const handleChange = (
@@ -71,7 +73,7 @@ export function Form({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate aria-busy={isSubmitting}>
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -107,12 +109,13 @@ export function Form({
                     name={field.name}
                     value={values[field.name]}
                     onChange={handleChange}
+                    disabled={isSubmitting}
                     aria-invalid={Boolean(fieldError)}
                     aria-describedby={
                       fieldError ? `${field.name}-error` : undefined
                     }
                     className={cn(
-                      "h-12 w-full rounded-2xl border bg-[#FFF8F9] px-4 text-sm font-semibold text-[#374151] outline-none transition-colors focus:border-[#F43F4E] focus:ring-2 focus:ring-[#F43F4E]/20",
+                      "h-12 w-full rounded-2xl border bg-[#FFF8F9] px-4 text-sm font-semibold text-[#374151] outline-none transition-colors disabled:cursor-not-allowed disabled:opacity-60 focus:border-[#F43F4E] focus:ring-2 focus:ring-[#F43F4E]/20",
                       fieldError ? "border-[#C51624]" : "border-[#FAD7DD]",
                       !values[field.name] && "text-[#9CA3AF]",
                     )}
@@ -135,12 +138,13 @@ export function Form({
                     value={values[field.name]}
                     placeholder={field.placeholder}
                     onChange={handleChange}
+                    disabled={isSubmitting}
                     aria-invalid={Boolean(fieldError)}
                     aria-describedby={
                       fieldError ? `${field.name}-error` : undefined
                     }
                     className={cn(
-                      "h-12 w-full rounded-2xl border bg-[#FFF8F9] px-4 text-sm font-semibold text-[#374151] outline-none transition-colors placeholder:text-[#9CA3AF] focus:border-[#F43F4E] focus:ring-2 focus:ring-[#F43F4E]/20",
+                      "h-12 w-full rounded-2xl border bg-[#FFF8F9] px-4 text-sm font-semibold text-[#374151] outline-none transition-colors placeholder:text-[#9CA3AF] disabled:cursor-not-allowed disabled:opacity-60 focus:border-[#F43F4E] focus:ring-2 focus:ring-[#F43F4E]/20",
                       fieldError ? "border-[#C51624]" : "border-[#FAD7DD]",
                     )}
                   />
@@ -160,8 +164,12 @@ export function Form({
         </motion.div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Button type="submit" className="w-full sm:w-auto">
-            {submitLabel}
+          <Button
+            type="submit"
+            className="w-full sm:w-auto"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Memproses..." : submitLabel}
           </Button>
           <Button
             type="button"

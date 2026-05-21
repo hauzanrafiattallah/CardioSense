@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 
 export type RiskLevel = "low" | "medium" | "high";
+export type ScreeningApiRiskLevel = "Low" | "Medium" | "High";
 
 export type ScreeningFormValues = {
   age: string;
@@ -37,6 +38,19 @@ export type ScreeningFactor = {
 };
 
 export type ScreeningErrors = Partial<Record<ScreeningFieldName, string>>;
+
+export type ScreeningApiRequest = {
+  age_year: number;
+  ap_hi: number;
+  ap_lo: number;
+  cholesterol: number;
+};
+
+export type ScreeningApiResponse = {
+  prediction: 0 | 1;
+  probability: number;
+  risk_level: ScreeningApiRiskLevel;
+};
 
 export type ScreeningResult = {
   eyebrow: string;

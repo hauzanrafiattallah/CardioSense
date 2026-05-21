@@ -2,7 +2,10 @@ import { Activity, ShieldAlert, ShieldCheck, Stethoscope } from "lucide-react";
 
 import type {
   RiskLevel,
+  ScreeningApiRequest,
+  ScreeningApiResponse,
   ScreeningErrors,
+  ScreeningFactor,
   ScreeningFormValues,
   ScreeningResult,
 } from "@/features/screening/types/Screening";
@@ -41,32 +44,24 @@ export function getRiskLevelMeta(level: RiskLevel) {
 }
 
 function toNumber(value: string) {
-  return Number.parseInt(value, 10);
+  return Number.parseFloat(value);
 }
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getAgeScore(age: number) {
-  if (age >= 65) return 36;
-  if (age >= 55) return 28;
-  if (age >= 45) return 20;
-  if (age >= 35) return 12;
-  return 5;
-}
-
-function getBloodPressureScore(systolic: number, diastolic: number) {
-  if (systolic >= 180 || diastolic >= 120) return 30;
-  if (systolic >= 140 || diastolic >= 90) return 22;
-  if (systolic >= 130 || diastolic >= 80) return 14;
-  return 4;
-}
-
-function getRiskLevel(percentage: number): RiskLevel {
-  if (percentage >= 65) return "high";
-  if (percentage >= 35) return "medium";
+function getAppRiskLevel(level: ScreeningApiResponse["risk_level"]): RiskLevel {
+  if (level === "High") return "high";
+  if (level === "Medium") return "medium";
   return "low";
+}
+
+function getCholesterolApiValue(value: string) {
+  if (value === "normal") return 1;
+  if (value === "borderline") return 2;
+  if (value === "high") return 3;
+  return Number.NaN;
 }
 
 export function validateScreeningValues(values: ScreeningFormValues) {
@@ -77,7 +72,7 @@ export function validateScreeningValues(values: ScreeningFormValues) {
 
   if (!values.age) {
     errors.age = "Usia wajib diisi.";
-  } else if (Number.isNaN(age) || age < 18 || age > 100) {
+  } else if (!Number.isFinite(age) || age < 18 || age > 100) {
     errors.age = "Masukkan usia 18-100 tahun.";
   }
 
@@ -88,7 +83,7 @@ export function validateScreeningValues(values: ScreeningFormValues) {
   if (!values.systolicPressure) {
     errors.systolicPressure = "Tekanan sistolik wajib diisi.";
   } else if (
-    Number.isNaN(systolicPressure) ||
+    !Number.isFinite(systolicPressure) ||
     systolicPressure < 80 ||
     systolicPressure > 240
   ) {
@@ -98,15 +93,27 @@ export function validateScreeningValues(values: ScreeningFormValues) {
   if (!values.diastolicPressure) {
     errors.diastolicPressure = "Tekanan diastolik wajib diisi.";
   } else if (
-    Number.isNaN(diastolicPressure) ||
+    !Number.isFinite(diastolicPressure) ||
     diastolicPressure < 50 ||
     diastolicPressure > 140
   ) {
     errors.diastolicPressure = "Masukkan diastolik 50-140 mmHg.";
   }
 
+  if (
+    !errors.systolicPressure &&
+    !errors.diastolicPressure &&
+    diastolicPressure >= systolicPressure
+  ) {
+    errors.diastolicPressure =
+      "Tekanan diastolik harus lebih rendah dari sistolik.";
+  }
+
   if (!values.cholesterol) {
     errors.cholesterol = "Pilih status kolesterol.";
+  } else if (values.cholesterol === "unknown") {
+    errors.cholesterol =
+      "Model membutuhkan status kolesterol: normal, ambang batas, atau tinggi.";
   }
 
   if (!values.smokingStatus) {
@@ -124,44 +131,29 @@ export function validateScreeningValues(values: ScreeningFormValues) {
   return errors;
 }
 
-export function calculateScreeningRisk(
+export function createScreeningPayload(
   values: ScreeningFormValues,
-): ScreeningResult {
+): ScreeningApiRequest {
+  return {
+    age_year: toNumber(values.age),
+    ap_hi: toNumber(values.systolicPressure),
+    ap_lo: toNumber(values.diastolicPressure),
+    cholesterol: getCholesterolApiValue(values.cholesterol),
+  };
+}
+
+function getScreeningFactors(values: ScreeningFormValues) {
+  const factors: ScreeningFactor[] = [];
   const age = toNumber(values.age);
   const systolicPressure = toNumber(values.systolicPressure);
   const diastolicPressure = toNumber(values.diastolicPressure);
 
-  const score =
-    getAgeScore(age) +
-    getBloodPressureScore(systolicPressure, diastolicPressure) +
-    (values.gender === "male" ? 5 : 0) +
-    (values.cholesterol === "high"
-      ? 18
-      : values.cholesterol === "borderline"
-        ? 9
-        : values.cholesterol === "unknown"
-          ? 4
-          : 0) +
-    (values.smokingStatus === "current"
-      ? 18
-      : values.smokingStatus === "former"
-        ? 8
-        : 0) +
-    (values.physicalActivity === "rare"
-      ? 12
-      : values.physicalActivity === "moderate"
-        ? 6
-        : 0) +
-    (values.familyHistory === "yes"
-      ? 12
-      : values.familyHistory === "unknown"
-        ? 4
-        : 0);
-
-  const percentage = clamp(score, 8, 95);
-  const level = getRiskLevel(percentage);
-  const riskMeta = getRiskLevelMeta(level);
-  const factors = [];
+  if (age >= 45) {
+    factors.push({
+      icon: ShieldAlert,
+      text: "Usia yang lebih tinggi dapat berkaitan dengan peningkatan risiko kardiovaskular.",
+    });
+  }
 
   if (systolicPressure >= 130 || diastolicPressure >= 80) {
     factors.push({
@@ -198,18 +190,40 @@ export function calculateScreeningRisk(
     });
   }
 
+  return factors;
+}
+
+export function createScreeningResult(
+  values: ScreeningFormValues,
+  apiResult: ScreeningApiResponse,
+): ScreeningResult {
+  const level = getAppRiskLevel(apiResult.risk_level);
+  const riskMeta = getRiskLevelMeta(level);
+  const percentage = clamp(
+    Math.round(apiResult.probability * 1000) / 10,
+    0,
+    100,
+  );
+  const factors = getScreeningFactors(values);
+  const predictionSummary =
+    apiResult.prediction === 1
+      ? "Model mendeteksi indikasi risiko penyakit kardiovaskular dari data utama yang dikirim."
+      : "Model tidak mendeteksi indikasi penyakit kardiovaskular dari data utama yang dikirim.";
+
   return {
     eyebrow: "Hasil Skrining",
     title: riskMeta.label,
     level,
     percentage,
-    overviewLabel: "Estimasi risiko",
+    overviewLabel: "Probabilitas model",
     factors: factors.slice(0, 4),
     summary:
-      "Hasil ini adalah estimasi risiko awal berdasarkan data yang kamu isi, bukan diagnosis medis atau hasil pasti.",
+      `${predictionSummary} Faktor gaya hidup di bawah dipakai sebagai edukasi tambahan, bukan input model.`,
     recommendation:
       level === "high"
         ? "Sebaiknya konsultasikan hasil ini dengan tenaga kesehatan profesional dan pertimbangkan pemeriksaan tekanan darah, kolesterol, serta gula darah."
+        : level === "medium"
+          ? "Pantau tekanan darah dan kebiasaan harian secara berkala. Pertimbangkan konsultasi bila ada keluhan atau faktor risiko tambahan."
         : "Gunakan hasil ini sebagai bahan edukasi dan lanjutkan kebiasaan sehat. Konsultasikan dengan tenaga kesehatan bila memiliki keluhan atau faktor risiko tambahan.",
   };
 }

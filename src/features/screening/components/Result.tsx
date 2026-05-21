@@ -1,7 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CircleGauge, ClipboardCheck } from "lucide-react";
+import {
+  CircleAlert,
+  CircleGauge,
+  ClipboardCheck,
+  LoaderCircle,
+} from "lucide-react";
 
 import { RiskBadge } from "@/components/shared/RiskBadge";
 import { Card } from "@/components/ui/card";
@@ -13,10 +18,35 @@ import { cn } from "@/lib/Utils";
 type ResultProps = {
   result: ScreeningResult | null;
   hasSubmitted: boolean;
+  isSubmitting: boolean;
+  submitError: string | null;
 };
 
-export function Result({ result, hasSubmitted }: ResultProps) {
+export function Result({
+  result,
+  hasSubmitted,
+  isSubmitting,
+  submitError,
+}: ResultProps) {
   if (!result) {
+    const EmptyIcon = submitError
+      ? CircleAlert
+      : isSubmitting
+        ? LoaderCircle
+        : ClipboardCheck;
+    const title = submitError
+      ? "Skrining belum tersedia"
+      : isSubmitting
+        ? "Memproses hasil"
+        : hasSubmitted
+          ? "Lengkapi data yang diperlukan"
+          : "Siap Dicek";
+    const description = submitError
+      ? submitError
+      : isSubmitting
+        ? "Data utama sedang dikirim ke model prediksi. Faktor gaya hidup tetap dipakai sebagai konteks edukasi hasil."
+        : "Isi form di sebelah kiri, lalu klik Cek Risiko untuk melihat estimasi risiko awal dan faktor yang perlu diperhatikan.";
+
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.94, y: 24 }}
@@ -33,19 +63,18 @@ export function Result({ result, hasSubmitted }: ResultProps) {
           <div className="relative flex h-full flex-col">
             {/* Header */}
             <div className="mb-5 flex size-16 items-center justify-center rounded-3xl bg-[#FFF1F3] text-[#C51624]">
-              <ClipboardCheck className="size-8" />
+              <EmptyIcon
+                className={cn("size-8", isSubmitting && "animate-spin")}
+              />
             </div>
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#C51624]">
               Hasil skrining
             </p>
             <h3 className="mt-2 font-heading text-3xl font-bold text-[#111418]">
-              {hasSubmitted ? "Lengkapi data yang diperlukan" : "Siap Dicek"}
+              {title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-[#6B7280]">
-              Isi form di sebelah kiri, lalu klik{" "}
-              <span className="font-semibold text-[#C51624]">Cek Risiko</span>{" "}
-              untuk melihat estimasi risiko awal dan faktor yang perlu
-              diperhatikan.
+              {description}
             </p>
 
             {/* Risk level preview */}
