@@ -10,6 +10,7 @@ type ChatInputProps = {
   onSend: () => void;
 };
 
+// Input hanya menangani ketikan user; request ke API tetap dikerjakan oleh hook.
 export function ChatInput({
   value,
   isTyping,
@@ -19,6 +20,7 @@ export function ChatInput({
   const trimmedValue = value.trim();
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    // Enter mengirim pesan agar terasa seperti aplikasi chat biasa.
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       onSend();
@@ -37,6 +39,7 @@ export function ChatInput({
           value={value}
           aria-label="Tanyakan tentang kesehatan jantung"
           placeholder="Tanyakan tentang kesehatan jantung..."
+          // Setiap ketikan dikirim ke state inputValue di useChatbot.
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
           className="min-w-0 flex-1 bg-transparent px-3 text-sm text-[#111418] outline-none placeholder:text-[#9CA3AF]"
@@ -45,6 +48,7 @@ export function ChatInput({
           type="button"
           aria-label="Kirim pesan"
           disabled={!trimmedValue || isTyping}
+          // Klik tombol kirim menjalankan sendMessage dari useChatbot.
           onClick={onSend}
           className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#C51624] text-white transition-all hover:-translate-y-0.5 hover:bg-[#F43F4E] hover:shadow-[0_12px_28px_rgba(244,63,78,0.26)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F43F4E]/40 disabled:cursor-not-allowed disabled:bg-[#FAD7DD] disabled:text-[#C51624]/45 disabled:shadow-none"
         >

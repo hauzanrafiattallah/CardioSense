@@ -10,6 +10,7 @@ type QuickPromptsProps = {
   disabled?: boolean;
 };
 
+// Quick prompt mengirim teks preset ke alur yang sama dengan pesan manual.
 export function QuickPrompts({ onSelectPrompt, disabled }: QuickPromptsProps) {
   return (
     <div className="rounded-3xl border border-[#FAD7DD]/80 bg-white/76 p-3 shadow-[0_12px_34px_rgba(197,22,36,0.06)]">
@@ -25,6 +26,7 @@ export function QuickPrompts({ onSelectPrompt, disabled }: QuickPromptsProps) {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
             disabled={disabled}
+            // Prompt preset dikirim ke sendQuickPrompt, lalu masuk ke sendMessage.
             onClick={() => onSelectPrompt(prompt)}
             className="cursor-pointer rounded-full border border-[#FAD7DD] bg-[#FFF1F3] px-3 py-2 text-left text-xs font-semibold leading-5 text-[#C51624] transition-colors hover:border-[#C51624] hover:bg-[#C51624] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F43F4E]/40 disabled:cursor-not-allowed disabled:opacity-55"
           >

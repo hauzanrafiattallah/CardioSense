@@ -13,6 +13,7 @@ import { Result } from "@/features/screening/components/Result";
 import { useScreening } from "@/features/screening/hooks/UseScreening";
 
 export function Screening() {
+  // Hook ini menyimpan state form, hasil prediksi, loading, error, dan aksi submit/reset.
   const {
     values,
     errors,
@@ -42,6 +43,7 @@ export function Screening() {
         </motion.div>
 
         <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          {/* Form menerima values/errors dari hook dan mengirim perubahan balik ke hook. */}
           <Form
             eyebrow={screeningContent.formEyebrow}
             title={screeningContent.formTitle}
@@ -56,6 +58,7 @@ export function Screening() {
             onSubmit={submitScreening}
             onReset={resetScreening}
           />
+          {/* Result menerima hasil olahan hook untuk menampilkan status atau kartu risiko. */}
           <Result
             result={result}
             hasSubmitted={hasSubmitted}

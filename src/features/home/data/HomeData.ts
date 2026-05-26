@@ -152,6 +152,7 @@ export const screeningContent = {
     "CardioSense bukan alat diagnosis medis. Hasil skrining sebaiknya dikonsultasikan dengan tenaga kesehatan profesional.",
 };
 
+// Konfigurasi field ini dikirim ke Form agar UI input bisa dirender dinamis.
 export const screeningFields: ScreeningField[] = [
   {
     name: "age",

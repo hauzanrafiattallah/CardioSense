@@ -10,6 +10,7 @@ type ChatBubbleProps = {
   message: ChatMessage;
 };
 
+// Formatter ringan agar jawaban LLM yang memakai markdown tetap enak dibaca di bubble.
 function stripMarkdownMarkers(value: string) {
   return value.replace(/\*\*/g, "").replace(/`/g, "").trim();
 }
@@ -119,6 +120,7 @@ function FormattedChatContent({ content }: { content: string }) {
 }
 
 export function ChatBubble({ message }: ChatBubbleProps) {
+  // Role menentukan posisi, warna, ikon, dan apakah konten perlu diformat.
   const isUser = message.role === "user";
 
   return (
@@ -142,6 +144,7 @@ export function ChatBubble({ message }: ChatBubbleProps) {
             : "rounded-bl-lg border border-[#FAD7DD]/75 bg-white text-[#111418]",
         )}
       >
+        {/* Pesan user tampil mentah; pesan assistant diformat dulu untuk bubble UI. */}
         {isUser ? message.content : <FormattedChatContent content={message.content} />}
       </div>
 

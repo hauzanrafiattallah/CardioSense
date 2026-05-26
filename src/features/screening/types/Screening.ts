@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
+// Tipe bersama untuk menjaga bentuk data tetap sama di form, API, util, dan result UI.
 export type RiskLevel = "low" | "medium" | "high";
 export type ScreeningApiRiskLevel = "Low" | "Medium" | "High";
 

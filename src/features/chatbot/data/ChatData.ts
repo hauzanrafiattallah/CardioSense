@@ -1,5 +1,6 @@
 import type { ChatMessage } from "@/features/chatbot/types/Chatbot";
 
+// Data awal yang dipakai UI sebelum user mengirim pertanyaan.
 export const initialAssistantMessage: ChatMessage = {
   id: "assistant-welcome",
   role: "assistant",
@@ -15,6 +16,7 @@ export const quickPrompts = [
   "Kapan harus konsultasi ke dokter?",
 ];
 
+// Response mock ini cadangan lokal; alur aktif sekarang memakai /api/chat ke Groq.
 export function getMockAssistantResponse(message: string) {
   const normalizedMessage = message.toLowerCase();
 

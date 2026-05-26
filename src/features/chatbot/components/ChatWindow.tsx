@@ -31,6 +31,7 @@ export function ChatWindow({
 }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Setiap pesan baru membuat panel otomatis scroll ke bagian paling bawah.
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isTyping]);
@@ -56,9 +57,11 @@ export function ChatWindow({
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
         <div className="grid gap-4">
+          {/* Data messages dari hook dirender satu per satu menjadi bubble chat. */}
           {messages.map((message, index) => (
             <div key={message.id} className="grid gap-3">
               <ChatBubble message={message} />
+              {/* Quick prompt hanya tampil setelah pesan pembuka sebagai starter question. */}
               {index === 0 ? (
                 <QuickPrompts
                   onSelectPrompt={onQuickPrompt}
@@ -95,6 +98,7 @@ export function ChatWindow({
         </div>
       </div>
 
+      {/* Input mengirim perubahan teks dan event kirim kembali ke hook. */}
       <ChatInput
         value={inputValue}
         isTyping={isTyping}

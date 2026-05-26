@@ -1,3 +1,4 @@
+// Tipe bersama untuk menyamakan bentuk data antara UI chatbot dan route API.
 export type ChatRole = "assistant" | "user";
 
 export type ChatMessage = {

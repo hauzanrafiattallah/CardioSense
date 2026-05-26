@@ -4,6 +4,7 @@ type MetricProps = {
   factor: ScreeningFactor;
 };
 
+// Satu baris faktor risiko/edukasi yang berasal dari hasil olahan screening.
 export function Metric({ factor }: MetricProps) {
   const Icon = factor.icon;
 

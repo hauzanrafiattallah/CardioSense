@@ -65,6 +65,7 @@ function getCholesterolApiValue(value: string) {
 }
 
 export function validateScreeningValues(values: ScreeningFormValues) {
+  // Validasi lokal mencegah request API saat input belum lengkap atau tidak masuk akal.
   const errors: ScreeningErrors = {};
   const age = toNumber(values.age);
   const systolicPressure = toNumber(values.systolicPressure);
@@ -134,6 +135,7 @@ export function validateScreeningValues(values: ScreeningFormValues) {
 export function createScreeningPayload(
   values: ScreeningFormValues,
 ): ScreeningApiRequest {
+  // Hanya field yang dibutuhkan model prediksi dikirim ke API eksternal.
   return {
     age_year: toNumber(values.age),
     ap_hi: toNumber(values.systolicPressure),
@@ -143,6 +145,7 @@ export function createScreeningPayload(
 }
 
 function getScreeningFactors(values: ScreeningFormValues) {
+  // Faktor edukatif dibuat dari seluruh form, termasuk data yang tidak dikirim ke model.
   const factors: ScreeningFactor[] = [];
   const age = toNumber(values.age);
   const systolicPressure = toNumber(values.systolicPressure);
@@ -197,6 +200,7 @@ export function createScreeningResult(
   values: ScreeningFormValues,
   apiResult: ScreeningApiResponse,
 ): ScreeningResult {
+  // Response API prediksi diubah menjadi format result yang mudah dirender UI.
   const level = getAppRiskLevel(apiResult.risk_level);
   const riskMeta = getRiskLevelMeta(level);
   const percentage = clamp(

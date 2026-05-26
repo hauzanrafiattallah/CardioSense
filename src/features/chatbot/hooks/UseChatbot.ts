@@ -11,6 +11,7 @@ import type {
 const CHAT_ERROR_MESSAGE =
   "Maaf, Asisten CardioSense sedang tidak tersedia. Untuk keluhan mendesak seperti nyeri dada berat, sesak napas, atau pingsan, segera hubungi layanan darurat atau fasilitas kesehatan terdekat.";
 
+// Membuat format pesan yang seragam sebelum disimpan di state chat.
 function createChatMessage(
   role: ChatMessage["role"],
   content: string,
@@ -27,6 +28,7 @@ function createChatMessage(
 }
 
 export function useChatbot() {
+  // Hook ini menjadi pusat alur chatbot: state UI, input, loading, dan request API.
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     initialAssistantMessage,
@@ -40,6 +42,7 @@ export function useChatbot() {
   const toggleChat = useCallback(() => setIsOpen((value) => !value), []);
 
   const requestAssistantResponse = useCallback(async (nextMessages: ChatMessage[]) => {
+    // History singkat dikirim ke route server agar Groq menjawab dengan konteks chat.
     abortControllerRef.current?.abort();
     setIsTyping(true);
 
@@ -47,6 +50,7 @@ export function useChatbot() {
     abortControllerRef.current = abortController;
 
     try {
+      // Browser mengirim seluruh history chat saat ini ke API internal Next.js.
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -56,6 +60,7 @@ export function useChatbot() {
         signal: abortController.signal,
       });
 
+      // API internal membalas JSON berisi message dari Groq atau error.
       const data = (await response.json()) as ChatApiResponse;
       const assistantMessage = data.message;
 
@@ -63,6 +68,7 @@ export function useChatbot() {
         throw new Error(data.error ?? "Chat request failed");
       }
 
+      // Jawaban assistant dimasukkan ke state, lalu ChatWindow merender bubble baru.
       setMessages((currentMessages) => [
         ...currentMessages,
         createChatMessage("assistant", assistantMessage),
@@ -72,6 +78,7 @@ export function useChatbot() {
         return;
       }
 
+      // Pesan error juga masuk ke state agar tampil sebagai bubble assistant.
       setMessages((currentMessages) => [
         ...currentMessages,
         createChatMessage("assistant", CHAT_ERROR_MESSAGE),
@@ -86,18 +93,23 @@ export function useChatbot() {
 
   const sendMessage = useCallback(
     (message?: string) => {
+      // Pesan manual dan quick prompt masuk ke alur yang sama.
       const content = (message ?? inputValue).trim();
 
       if (!content || isTyping) {
         return;
       }
 
+      // Teks user dibungkus menjadi ChatMessage sebelum masuk ke UI dan API.
       const userMessage = createChatMessage("user", content);
       const nextMessages = [...messages, userMessage];
 
+      // Pesan user tampil dulu di UI agar chat terasa responsif.
       setMessages(nextMessages);
       setInputValue("");
       setIsOpen(true);
+
+      // Setelah UI diperbarui, history terbaru dikirim ke /api/chat.
       void requestAssistantResponse(nextMessages);
     },
     [inputValue, isTyping, messages, requestAssistantResponse],

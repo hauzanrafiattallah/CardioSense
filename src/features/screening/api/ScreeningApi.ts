@@ -10,6 +10,7 @@ const SCREENING_API_TIMEOUT_MS = 15_000;
 const SCREENING_API_URL_MISSING = "SCREENING_API_URL_MISSING";
 const SCREENING_PREDICT_PATH = "/predict";
 
+// Client HTTP untuk consume API prediksi eksternal yang URL-nya dari env public.
 const screeningApi = axios.create({
   timeout: SCREENING_API_TIMEOUT_MS,
   headers: {
@@ -19,6 +20,7 @@ const screeningApi = axios.create({
 });
 
 function getScreeningPredictUrl() {
+  // Frontend mengambil base URL dari NEXT_PUBLIC_SCREENING_API_URL.
   const baseUrl = process.env.NEXT_PUBLIC_SCREENING_API_URL?.trim();
 
   if (!baseUrl) {
@@ -62,6 +64,7 @@ function toRiskLevel(value: unknown): ScreeningApiRiskLevel | null {
 }
 
 function normalizeScreeningResponse(value: unknown): ScreeningApiResponse {
+  // Response mentah dari API divalidasi dulu sebelum dipakai oleh UI.
   if (!isRecord(value)) {
     throw new Error("Invalid screening response");
   }
@@ -114,6 +117,7 @@ export async function requestScreeningPrediction(
   payload: ScreeningApiRequest,
   signal?: AbortSignal,
 ): Promise<ScreeningApiResponse> {
+  // Payload dari hook dikirim ke endpoint /predict milik API screening.
   const response = await screeningApi.post<unknown>(
     getScreeningPredictUrl(),
     payload,
@@ -127,5 +131,6 @@ export async function requestScreeningPrediction(
     throw new Error(getApiErrorMessage(response.data));
   }
 
+  // Data response yang sudah valid dikembalikan ke hook useScreening.
   return normalizeScreeningResponse(response.data);
 }

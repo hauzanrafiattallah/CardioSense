@@ -24,6 +24,7 @@ const SCREENING_ERROR_MESSAGE =
 const SCREENING_CONFIG_ERROR_MESSAGE =
   "Endpoint screening belum dikonfigurasi.";
 
+// Nilai awal form sebelum user mengisi data screening.
 const initialValues: ScreeningFormValues = {
   age: "",
   gender: "",
@@ -36,6 +37,7 @@ const initialValues: ScreeningFormValues = {
 };
 
 export function useScreening() {
+  // Hook ini menjadi pusat alur screening: state input, validasi, request API, dan hasil.
   const [values, setValues] = useState<ScreeningFormValues>(initialValues);
   const [errors, setErrors] = useState<ScreeningErrors>({});
   const [result, setResult] = useState<ScreeningResult | null>(null);
@@ -45,6 +47,7 @@ export function useScreening() {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const updateValue = (name: ScreeningFieldName, value: string) => {
+    // Form mengirim nama field + value ke sini setiap user mengubah input.
     setValues((currentValues) => ({
       ...currentValues,
       [name]: value,
@@ -63,11 +66,13 @@ export function useScreening() {
   };
 
   const submitScreening = async () => {
+    // Tombol submit Form memulai validasi sebelum data dikirim ke API prediksi.
     if (isSubmitting) {
       return;
     }
 
     const nextErrors = validateScreeningValues(values);
+    // Error validasi dikirim balik ke Form agar tampil di bawah field terkait.
     setHasSubmitted(true);
     setErrors(nextErrors);
     setSubmitError(null);
@@ -85,11 +90,13 @@ export function useScreening() {
     setResult(null);
 
     try {
+      // Values form diubah menjadi payload API, lalu dikirim ke endpoint screening.
       const apiResult = await requestScreeningPrediction(
         createScreeningPayload(values),
         abortController.signal,
       );
 
+      // Response API digabung dengan values form menjadi data siap-render untuk Result.
       setResult(createScreeningResult(values, apiResult));
     } catch (error) {
       if (isScreeningApiCanceled(error)) {
@@ -111,6 +118,7 @@ export function useScreening() {
   };
 
   const resetScreening = () => {
+    // Reset membatalkan request aktif dan mengembalikan UI ke kondisi awal.
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setValues(initialValues);

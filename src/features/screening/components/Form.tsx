@@ -44,6 +44,7 @@ export function Form({
   onReset,
 }: FormProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    // Submit browser ditahan, lalu aksi submit dikirim ke useScreening.
     event.preventDefault();
     void onSubmit();
   };
@@ -51,6 +52,7 @@ export function Form({
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
+    // Setiap input/select mengirim name dan value ke updateValue di useScreening.
     onChange(event.target.name as ScreeningFieldName, event.target.value);
   };
 
@@ -84,6 +86,7 @@ export function Form({
           }}
           className="grid gap-4 sm:grid-cols-2"
         >
+          {/* Field dari HomeData dirender menjadi input/select berdasarkan tipe. */}
           {fields.map((field) => {
             const fieldError = errors[field.name];
 
@@ -108,6 +111,7 @@ export function Form({
                     id={field.name}
                     name={field.name}
                     value={values[field.name]}
+                    // Perubahan select dikirim balik ke hook sebagai state values.
                     onChange={handleChange}
                     disabled={isSubmitting}
                     aria-invalid={Boolean(fieldError)}
@@ -137,6 +141,7 @@ export function Form({
                     inputMode={field.inputMode}
                     value={values[field.name]}
                     placeholder={field.placeholder}
+                    // Perubahan input angka dikirim balik ke hook sebagai state values.
                     onChange={handleChange}
                     disabled={isSubmitting}
                     aria-invalid={Boolean(fieldError)}
@@ -175,6 +180,7 @@ export function Form({
             type="button"
             variant="secondary"
             className="w-full sm:w-auto"
+            // Reset mengosongkan form, error, loading, dan result di useScreening.
             onClick={onReset}
           >
             {resetLabel}

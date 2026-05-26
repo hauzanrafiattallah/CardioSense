@@ -12,6 +12,7 @@ const MAX_MESSAGE_LENGTH = 900;
 const DEFAULT_MODEL = "openai/gpt-oss-20b";
 const REQUEST_TIMEOUT_MS = 15_000;
 
+// Prompt sistem membatasi LLM agar tetap menjawab sebagai Asisten CardioSense.
 const CARDIOSENSE_SYSTEM_PROMPT = `
 Kamu adalah Asisten CardioSense untuk website skrining awal dan edukasi kesehatan kardiovaskular.
 
@@ -162,6 +163,7 @@ function containsAnyTerm(value: string, terms: readonly string[]) {
 }
 
 function sanitizeMessages(messages: unknown): IncomingChatMessage[] {
+  // Bersihkan input browser sebelum masuk ke prompt LLM.
   if (!Array.isArray(messages)) {
     return [];
   }
@@ -186,6 +188,7 @@ function getLatestUserMessage(messages: IncomingChatMessage[]) {
 }
 
 function shouldAnswerWithinCardioSense(messages: IncomingChatMessage[]) {
+  // Filter murah sebelum call Groq supaya topik luar domain tidak memakai token LLM.
   const latestUserMessage = getLatestUserMessage(messages);
 
   if (!latestUserMessage) {
@@ -221,6 +224,7 @@ function shouldAnswerWithinCardioSense(messages: IncomingChatMessage[]) {
 function buildGroqMessages(
   messages: IncomingChatMessage[],
 ): ChatCompletionMessageParam[] {
+  // History user digabung dengan system prompt sebelum dikirim ke Groq.
   return [
     {
       role: "system",
@@ -250,6 +254,7 @@ function getSafeStatus(error: unknown) {
 }
 
 export async function POST(request: Request) {
+  // Route server ini menjaga GROQ_API_KEY tetap di backend, bukan di browser.
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
@@ -262,6 +267,7 @@ export async function POST(request: Request) {
   let body: ChatRequestBody;
 
   try {
+    // Terima payload dari fetch("/api/chat") di useChatbot.
     body = (await request.json()) as ChatRequestBody;
   } catch {
     return Response.json(
@@ -270,6 +276,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // History dari UI dipotong dan dibersihkan sebelum diteruskan ke Groq.
   const sanitizedMessages = sanitizeMessages(body.messages);
 
   if (!getLatestUserMessage(sanitizedMessages)) {
@@ -293,6 +300,7 @@ export async function POST(request: Request) {
   });
 
   try {
+    // API internal meneruskan prompt + history chat ke Groq.
     const completion = await groq.chat.completions.create({
       messages: buildGroqMessages(sanitizedMessages),
       model: process.env.GROQ_MODEL ?? DEFAULT_MODEL,
@@ -300,8 +308,10 @@ export async function POST(request: Request) {
       temperature: 0.2,
     });
 
+    // Ambil teks jawaban dari response Groq.
     const message = completion.choices[0]?.message?.content?.trim();
 
+    // Kirim jawaban balik ke frontend agar useChatbot bisa membuat bubble assistant.
     return Response.json({
       message:
         message ||

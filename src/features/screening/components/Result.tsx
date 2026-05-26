@@ -29,6 +29,7 @@ export function Result({
   submitError,
 }: ResultProps) {
   if (!result) {
+    // Tanpa result, panel menampilkan state awal, loading, error, atau validasi.
     const EmptyIcon = submitError
       ? CircleAlert
       : isSubmitting
@@ -150,6 +151,7 @@ export function Result({
     );
   }
 
+  // Setelah result tersedia, metadata risiko menentukan warna badge dan progress bar.
   const riskMeta = getRiskLevelMeta(result.level);
 
   return (
@@ -208,6 +210,7 @@ export function Result({
           </div>
 
           <div className="mt-5 grid gap-3">
+            {/* Faktor edukatif dari createScreeningResult ditampilkan sebagai metric rows. */}
             {result.factors.length > 0 ? (
               result.factors.map((factor) => (
                 <Metric key={factor.text} factor={factor} />

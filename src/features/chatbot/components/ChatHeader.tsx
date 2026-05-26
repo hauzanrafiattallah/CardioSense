@@ -6,6 +6,7 @@ type ChatHeaderProps = {
   onClose: () => void;
 };
 
+// Header hanya mengatur identitas asisten dan aksi tutup window.
 export function ChatHeader({ onClose }: ChatHeaderProps) {
   return (
     <div className="relative overflow-hidden rounded-t-3xl bg-[linear-gradient(135deg,#C51624_0%,#F43F4E_100%)] px-4 py-4 text-white">

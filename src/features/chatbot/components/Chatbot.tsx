@@ -7,6 +7,7 @@ import { ChatWindow } from "@/features/chatbot/components/ChatWindow";
 import { useChatbot } from "@/features/chatbot/hooks/UseChatbot";
 
 export function Chatbot() {
+  // Root chatbot: ambil state dari hook, lalu hubungkan ke window dan tombol floating.
   const {
     isOpen,
     messages,
@@ -23,6 +24,7 @@ export function Chatbot() {
     <div className="fixed bottom-4 right-4 z-[90] sm:bottom-6 sm:right-6">
       <AnimatePresence>
         {isOpen ? (
+          // State dari hook dikirim ke window, callback window dikembalikan ke hook.
           <ChatWindow
             messages={messages}
             inputValue={inputValue}
