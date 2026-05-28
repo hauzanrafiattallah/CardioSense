@@ -145,7 +145,7 @@ export const screeningContent = {
   formEyebrow: "Form skrining",
   formTitle: "Isi Data Kesehatan",
   formDescription:
-    "Model memakai usia, tekanan darah, dan status kolesterol. Faktor gaya hidup tetap diisi sebagai konteks edukasi hasil.",
+    "Model memakai data demografi, antropometri, kolesterol, tekanan darah, dan faktor gaya hidup untuk menghitung skor risiko.",
   submitLabel: "Cek Risiko",
   resetLabel: "Kosongkan Form",
   disclaimer:
@@ -171,8 +171,46 @@ export const screeningFields: ScreeningField[] = [
     options: [
       { label: "Perempuan", value: "female" },
       { label: "Laki-laki", value: "male" },
-      { label: "Tidak disebutkan", value: "unspecified" },
     ],
+  },
+  {
+    name: "weight",
+    label: "Berat Badan (kg)",
+    type: "number",
+    placeholder: "Contoh: 70",
+    min: 30,
+    max: 250,
+    step: "0.1",
+    inputMode: "decimal",
+  },
+  {
+    name: "height",
+    label: "Tinggi Badan (cm)",
+    type: "number",
+    placeholder: "Contoh: 170",
+    min: 120,
+    max: 220,
+    step: "0.1",
+    inputMode: "decimal",
+  },
+  {
+    name: "abdominalCircumference",
+    label: "Lingkar Perut (cm)",
+    type: "number",
+    placeholder: "Contoh: 85",
+    min: 40,
+    max: 180,
+    step: "0.1",
+    inputMode: "decimal",
+  },
+  {
+    name: "totalCholesterol",
+    label: "Total Kolesterol (mg/dL)",
+    type: "number",
+    placeholder: "Contoh: 200",
+    min: 100,
+    max: 400,
+    inputMode: "numeric",
   },
   {
     name: "systolicPressure",
@@ -193,18 +231,6 @@ export const screeningFields: ScreeningField[] = [
     inputMode: "numeric",
   },
   {
-    name: "cholesterol",
-    label: "Kolesterol",
-    type: "select",
-    placeholder: "Pilih status kolesterol",
-    options: [
-      { label: "Normal", value: "normal" },
-      { label: "Ambang batas", value: "borderline" },
-      { label: "Tinggi", value: "high" },
-      { label: "Belum tahu", value: "unknown" },
-    ],
-  },
-  {
     name: "smokingStatus",
     label: "Status Merokok",
     type: "select",
@@ -213,6 +239,16 @@ export const screeningFields: ScreeningField[] = [
       { label: "Tidak merokok", value: "never" },
       { label: "Pernah merokok", value: "former" },
       { label: "Masih merokok", value: "current" },
+    ],
+  },
+  {
+    name: "diabetesStatus",
+    label: "Status Diabetes",
+    type: "select",
+    placeholder: "Pilih status diabetes",
+    options: [
+      { label: "Tidak ada", value: "no" },
+      { label: "Ada", value: "yes" },
     ],
   },
   {
@@ -234,7 +270,6 @@ export const screeningFields: ScreeningField[] = [
     options: [
       { label: "Tidak ada", value: "no" },
       { label: "Ada", value: "yes" },
-      { label: "Belum tahu", value: "unknown" },
     ],
   },
 ];

@@ -45,7 +45,7 @@ export function Result({
     const description = submitError
       ? submitError
       : isSubmitting
-        ? "Data utama sedang dikirim ke model prediksi. Faktor gaya hidup tetap dipakai sebagai konteks edukasi hasil."
+        ? "Data screening sedang dikirim ke model prediksi terbaru untuk menghitung skor dan faktor risiko."
         : "Isi form di sebelah kiri, lalu klik Cek Risiko untuk melihat estimasi risiko awal dan faktor yang perlu diperhatikan.";
 
     return (
@@ -207,10 +207,13 @@ export function Result({
                 )}
               />
             </div>
+            <p className="mt-3 text-xs font-semibold text-[#6B7280]">
+              Skor mentah model: {result.rawRiskScore}
+            </p>
           </div>
 
           <div className="mt-5 grid gap-3">
-            {/* Faktor edukatif dari createScreeningResult ditampilkan sebagai metric rows. */}
+            {/* Faktor model dari createScreeningResult ditampilkan sebagai metric rows. */}
             {result.factors.length > 0 ? (
               result.factors.map((factor) => (
                 <Metric key={factor.text} factor={factor} />

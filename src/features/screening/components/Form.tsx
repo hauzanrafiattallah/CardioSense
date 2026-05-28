@@ -138,6 +138,7 @@ export function Form({
                     type="number"
                     min={field.min}
                     max={field.max}
+                    step={field.step}
                     inputMode={field.inputMode}
                     value={values[field.name]}
                     placeholder={field.placeholder}

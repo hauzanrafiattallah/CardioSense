@@ -3,8 +3,8 @@ import axios from "axios";
 import type {
   ScreeningApiRequest,
   ScreeningApiResponse,
-  ScreeningApiRiskLevel,
 } from "@/features/screening/types/Screening";
+import { normalizeLatestScreeningResponse } from "@/features/screening/utils/ApiContract";
 
 const SCREENING_API_TIMEOUT_MS = 15_000;
 const SCREENING_API_URL_MISSING = "SCREENING_API_URL_MISSING";
@@ -34,69 +34,38 @@ function getScreeningPredictUrl() {
     : `${normalizedBaseUrl}${SCREENING_PREDICT_PATH}`;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
+function getApiErrorMessage(value: unknown) {
+  if (typeof value === "object" && value !== null && "error" in value) {
+    const error = value.error;
 
-function toFiniteNumber(value: unknown) {
-  const parsedValue =
-    typeof value === "number"
-      ? value
-      : typeof value === "string"
-        ? Number.parseFloat(value)
-        : Number.NaN;
-
-  return Number.isFinite(parsedValue) ? parsedValue : null;
-}
-
-function toPrediction(value: unknown): 0 | 1 | null {
-  if (value === 0 || value === "0") return 0;
-  if (value === 1 || value === "1") return 1;
-  return null;
-}
-
-function toRiskLevel(value: unknown): ScreeningApiRiskLevel | null {
-  if (value === "Low" || value === "Medium" || value === "High") {
-    return value;
+    if (typeof error === "string") {
+      return error;
+    }
   }
 
-  return null;
-}
+  if (typeof value === "object" && value !== null && "message" in value) {
+    const message = value.message;
 
-function normalizeScreeningResponse(value: unknown): ScreeningApiResponse {
-  // Response mentah dari API divalidasi dulu sebelum dipakai oleh UI.
-  if (!isRecord(value)) {
-    throw new Error("Invalid screening response");
+    if (typeof message === "string") {
+      return message;
+    }
   }
 
-  const prediction = toPrediction(value.prediction);
-  const probability = toFiniteNumber(value.probability);
-  const riskLevel = toRiskLevel(value.risk_level);
+  if (typeof value === "object" && value !== null && "detail" in value) {
+    const detail = value.detail;
+
+    if (typeof detail === "string") {
+      return detail;
+    }
+  }
 
   if (
-    prediction === null ||
-    probability === null ||
-    probability < 0 ||
-    probability > 1 ||
-    riskLevel === null
+    typeof value === "object" &&
+    value !== null &&
+    "detail" in value &&
+    Array.isArray(value.detail)
   ) {
-    throw new Error("Invalid screening response");
-  }
-
-  return {
-    prediction,
-    probability,
-    risk_level: riskLevel,
-  };
-}
-
-function getApiErrorMessage(value: unknown) {
-  if (isRecord(value) && typeof value.error === "string") {
-    return value.error;
-  }
-
-  if (isRecord(value) && typeof value.message === "string") {
-    return value.message;
+    return "Data screening tidak sesuai format API.";
   }
 
   return "Screening request failed";
@@ -132,5 +101,5 @@ export async function requestScreeningPrediction(
   }
 
   // Data response yang sudah valid dikembalikan ke hook useScreening.
-  return normalizeScreeningResponse(response.data);
+  return normalizeLatestScreeningResponse(response.data);
 }

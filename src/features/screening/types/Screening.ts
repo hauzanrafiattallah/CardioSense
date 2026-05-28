@@ -2,14 +2,18 @@ import type { LucideIcon } from "lucide-react";
 
 // Tipe bersama untuk menjaga bentuk data tetap sama di form, API, util, dan result UI.
 export type RiskLevel = "low" | "medium" | "high";
-export type ScreeningApiRiskLevel = "Low" | "Medium" | "High";
+export type ScreeningApiRiskLevel = "Low" | "Moderate" | "High";
 
 export type ScreeningFormValues = {
   age: string;
   gender: string;
+  weight: string;
+  height: string;
+  abdominalCircumference: string;
+  totalCholesterol: string;
+  diabetesStatus: string;
   systolicPressure: string;
   diastolicPressure: string;
-  cholesterol: string;
   smokingStatus: string;
   physicalActivity: string;
   familyHistory: string;
@@ -30,27 +34,45 @@ export type ScreeningField = {
   options?: ScreeningFieldOption[];
   min?: number;
   max?: number;
-  inputMode?: "numeric";
+  step?: number | string;
+  inputMode?: "numeric" | "decimal";
 };
 
 export type ScreeningFactor = {
   icon: LucideIcon;
   text: string;
+  tone?: "risk" | "protective" | "education";
 };
 
 export type ScreeningErrors = Partial<Record<ScreeningFieldName, string>>;
 
 export type ScreeningApiRequest = {
-  age_year: number;
-  ap_hi: number;
-  ap_lo: number;
-  cholesterol: number;
+  sex: number;
+  age: number;
+  weight: number;
+  height: number;
+  abdominal_circumference: number;
+  total_cholesterol: number;
+  smoking_status: number;
+  diabetes_status: number;
+  physical_activity_level: number;
+  family_history_cvd: number;
+  systolic_bp: number;
+  diastolic_bp: number;
+};
+
+export type ScreeningApiFactor = {
+  feature: string;
+  value: number;
+  impact: number;
 };
 
 export type ScreeningApiResponse = {
-  prediction: 0 | 1;
-  probability: number;
+  raw_risk_score: number;
+  normalized_risk_score: number;
   risk_level: ScreeningApiRiskLevel;
+  top_risk_factors: ScreeningApiFactor[];
+  protective_factors: ScreeningApiFactor[];
 };
 
 export type ScreeningResult = {
@@ -58,6 +80,7 @@ export type ScreeningResult = {
   title: string;
   level: RiskLevel;
   percentage: number;
+  rawRiskScore: number;
   overviewLabel: string;
   factors: ScreeningFactor[];
   summary: string;

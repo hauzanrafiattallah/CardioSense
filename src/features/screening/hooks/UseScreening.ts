@@ -28,9 +28,13 @@ const SCREENING_CONFIG_ERROR_MESSAGE =
 const initialValues: ScreeningFormValues = {
   age: "",
   gender: "",
+  weight: "",
+  height: "",
+  abdominalCircumference: "",
+  totalCholesterol: "",
+  diabetesStatus: "",
   systolicPressure: "",
   diastolicPressure: "",
-  cholesterol: "",
   smokingStatus: "",
   physicalActivity: "",
   familyHistory: "",
@@ -90,7 +94,7 @@ export function useScreening() {
     setResult(null);
 
     try {
-      // Values form diubah menjadi payload API, lalu dikirim ke endpoint screening.
+      // Values form diubah menjadi payload API terbaru, lalu dikirim ke endpoint screening.
       const apiResult = await requestScreeningPrediction(
         createScreeningPayload(values),
         abortController.signal,
