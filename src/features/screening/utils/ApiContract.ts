@@ -7,14 +7,13 @@ import type {
 } from "@/features/screening/types/Screening";
 
 const genderCodes = {
-  female: 0,
-  male: 1,
+  male: 0,
+  female: 1,
 } as const;
 
 const smokingStatusCodes = {
-  never: 0,
-  former: 1,
-  current: 2,
+  no: 0,
+  yes: 1,
 } as const;
 
 const diabetesStatusCodes = {
@@ -23,9 +22,9 @@ const diabetesStatusCodes = {
 } as const;
 
 const physicalActivityCodes = {
-  rare: 0,
-  moderate: 1,
-  routine: 2,
+  rare: 1,
+  moderate: 2,
+  routine: 3,
 } as const;
 
 const familyHistoryCodes = {

@@ -250,7 +250,7 @@ function getScreeningFactors(values: ScreeningFormValues) {
     });
   }
 
-  if (values.smokingStatus === "current") {
+  if (values.smokingStatus === "yes") {
     factors.push({
       icon: ShieldAlert,
       tone: "education",
@@ -295,13 +295,11 @@ function formatImpact(impact: number) {
 
 function formatModelValue(factor: ScreeningApiFactor) {
   if (factor.feature === "Sex") {
-    return factor.value === 1 ? "Laki-laki" : "Perempuan";
+    return factor.value === 0 ? "Laki-laki" : "Perempuan";
   }
 
   if (factor.feature === "Smoking Status") {
-    if (factor.value === 2) return "Masih merokok";
-    if (factor.value === 1) return "Pernah merokok";
-    return "Tidak merokok";
+    return factor.value === 1 ? "Ya" : "Tidak";
   }
 
   if (factor.feature === "Diabetes") {
@@ -309,8 +307,8 @@ function formatModelValue(factor: ScreeningApiFactor) {
   }
 
   if (factor.feature === "Physical Activity") {
-    if (factor.value === 2) return "Rutin";
-    if (factor.value === 1) return "Kadang-kadang";
+    if (factor.value === 3) return "Rutin";
+    if (factor.value === 2) return "Kadang-kadang";
     return "Jarang";
   }
 

@@ -161,7 +161,8 @@ export const screeningFields: ScreeningField[] = [
     placeholder: "Contoh: 45",
     min: 18,
     max: 100,
-    inputMode: "numeric",
+    step: "0.1",
+    inputMode: "decimal",
   },
   {
     name: "gender",
@@ -236,9 +237,8 @@ export const screeningFields: ScreeningField[] = [
     type: "select",
     placeholder: "Pilih status merokok",
     options: [
-      { label: "Tidak merokok", value: "never" },
-      { label: "Pernah merokok", value: "former" },
-      { label: "Masih merokok", value: "current" },
+      { label: "Tidak", value: "no" },
+      { label: "Ya", value: "yes" },
     ],
   },
   {
