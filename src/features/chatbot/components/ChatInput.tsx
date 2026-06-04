@@ -42,7 +42,7 @@ export function ChatInput({
           // Setiap ketikan dikirim ke state inputValue di useChatbot.
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={handleKeyDown}
-          className="min-w-0 flex-1 bg-transparent px-3 text-sm text-[#111418] outline-none placeholder:text-[#9CA3AF]"
+          className="min-w-0 flex-1 bg-transparent px-3 text-base text-[#111418] outline-none placeholder:text-[#9CA3AF] sm:text-sm"
         />
         <button
           type="button"
