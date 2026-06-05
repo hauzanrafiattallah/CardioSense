@@ -62,7 +62,7 @@ function HeroVisual() {
       initial={{ opacity: 0, scale: 0.96, y: 30 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="relative mx-auto mt-12 w-full min-w-0 max-w-[calc(100vw-2rem)] sm:max-w-[560px] lg:mt-0"
+      className="relative mx-auto mt-12 w-full min-w-0 max-w-[calc(100vw-2rem)] pb-14 sm:max-w-[560px] sm:pb-12 lg:mt-0 lg:pb-10"
     >
       <motion.div
         animate={{ y: [0, -12, 0] }}
