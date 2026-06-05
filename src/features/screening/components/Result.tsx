@@ -6,27 +6,41 @@ import {
   CircleGauge,
   ClipboardCheck,
   LoaderCircle,
+  MessageCircle,
+  Sparkles,
 } from "lucide-react";
 
 import { RiskBadge } from "@/components/shared/RiskBadge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Metric } from "@/features/screening/components/Metric";
-import type { ScreeningResult } from "@/features/screening/types/Screening";
+import type {
+  ScreeningAiRecommendation,
+  ScreeningResult,
+} from "@/features/screening/types/Screening";
 import { getRiskLevelMeta } from "@/features/screening/utils/Risk";
 import { cn } from "@/lib/Utils";
 
 type ResultProps = {
   result: ScreeningResult | null;
+  aiRecommendation: ScreeningAiRecommendation | null;
   hasSubmitted: boolean;
   isSubmitting: boolean;
+  isGeneratingRecommendation: boolean;
   submitError: string | null;
+  recommendationError: string | null;
+  onAskAssistant: () => void;
 };
 
 export function Result({
   result,
+  aiRecommendation,
   hasSubmitted,
   isSubmitting,
+  isGeneratingRecommendation,
   submitError,
+  recommendationError,
+  onAskAssistant,
 }: ResultProps) {
   if (!result) {
     // Tanpa result, panel menampilkan state awal, loading, error, atau validasi.
@@ -230,9 +244,68 @@ export function Result({
             {result.summary}
           </p>
 
-          <p className="mt-4 rounded-2xl border border-[#FAD7DD]/80 bg-white p-4 text-sm leading-6 text-[#374151]">
-            {result.recommendation}
-          </p>
+          <div className="mt-4 rounded-2xl border border-[#FAD7DD]/80 bg-white p-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-[#111418]">
+                <span className="flex size-8 items-center justify-center rounded-full bg-[#FFF1F3] text-[#C51624]">
+                  {isGeneratingRecommendation ? (
+                    <LoaderCircle className="size-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="size-4" />
+                  )}
+                </span>
+                Rekomendasi pribadi
+              </div>
+              {aiRecommendation ? (
+                <span className="rounded-full bg-[#35B8E5]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#0E7490]">
+                  AI
+                </span>
+              ) : null}
+            </div>
+
+            {isGeneratingRecommendation ? (
+              <p className="text-sm leading-6 text-[#6B7280]">
+                Rekomendasi pribadi sedang dibuat berdasarkan hasil skrining dan
+                faktor dominan yang terdeteksi.
+              </p>
+            ) : null}
+
+            {aiRecommendation ? (
+              <p className="whitespace-pre-line text-sm leading-6 text-[#374151]">
+                {aiRecommendation.recommendation}
+              </p>
+            ) : null}
+
+            {!isGeneratingRecommendation && !aiRecommendation ? (
+              <div className="grid gap-3">
+                {recommendationError ? (
+                  <p className="rounded-xl bg-[#FFF1F3] px-3 py-2 text-xs font-semibold leading-5 text-[#C51624]">
+                    {recommendationError}
+                  </p>
+                ) : null}
+                <p className="text-sm leading-6 text-[#374151]">
+                  {result.recommendation}
+                </p>
+              </div>
+            ) : null}
+
+            <div className="mt-4 flex flex-col gap-3 border-t border-[#FAD7DD]/70 pt-4">
+              <p className="text-xs leading-5 text-[#9CA3AF]">
+                Informasi ini bersifat edukatif dan bukan pengganti konsultasi
+                tenaga kesehatan profesional.
+              </p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="w-full sm:w-fit"
+                onClick={onAskAssistant}
+              >
+                <MessageCircle className="size-4" />
+                Tanya lanjut di chatbot
+              </Button>
+            </div>
+          </div>
         </div>
       </Card>
     </motion.div>

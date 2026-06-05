@@ -7,7 +7,9 @@ import {
   isScreeningApiUrlMissing,
   requestScreeningPrediction,
 } from "@/features/screening/api/ScreeningApi";
+import { requestScreeningRecommendation } from "@/features/screening/api/RecommendationApi";
 import type {
+  ScreeningAiRecommendation,
   ScreeningErrors,
   ScreeningFieldName,
   ScreeningFormValues,
@@ -23,6 +25,8 @@ const SCREENING_ERROR_MESSAGE =
   "Skrining belum tersedia. Coba lagi beberapa saat.";
 const SCREENING_CONFIG_ERROR_MESSAGE =
   "Endpoint screening belum dikonfigurasi.";
+const RECOMMENDATION_ERROR_MESSAGE =
+  "Rekomendasi pribadi belum tersedia. Rekomendasi standar tetap bisa digunakan sebagai panduan edukatif.";
 
 // Nilai awal form sebelum user mengisi data screening.
 const initialValues: ScreeningFormValues = {
@@ -45,10 +49,61 @@ export function useScreening() {
   const [values, setValues] = useState<ScreeningFormValues>(initialValues);
   const [errors, setErrors] = useState<ScreeningErrors>({});
   const [result, setResult] = useState<ScreeningResult | null>(null);
+  const [aiRecommendation, setAiRecommendation] =
+    useState<ScreeningAiRecommendation | null>(null);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGeneratingRecommendation, setIsGeneratingRecommendation] =
+    useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [recommendationError, setRecommendationError] = useState<string | null>(
+    null,
+  );
   const abortControllerRef = useRef<AbortController | null>(null);
+  const recommendationAbortControllerRef = useRef<AbortController | null>(null);
+
+  const clearRecommendationState = () => {
+    recommendationAbortControllerRef.current?.abort();
+    recommendationAbortControllerRef.current = null;
+    setAiRecommendation(null);
+    setIsGeneratingRecommendation(false);
+    setRecommendationError(null);
+  };
+
+  const generateRecommendation = async (
+    submittedValues: ScreeningFormValues,
+    submittedResult: ScreeningResult,
+  ) => {
+    recommendationAbortControllerRef.current?.abort();
+
+    const abortController = new AbortController();
+    recommendationAbortControllerRef.current = abortController;
+    setAiRecommendation(null);
+    setRecommendationError(null);
+    setIsGeneratingRecommendation(true);
+
+    try {
+      const nextRecommendation = await requestScreeningRecommendation(
+        submittedValues,
+        submittedResult,
+        abortController.signal,
+      );
+
+      setAiRecommendation(nextRecommendation);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      setAiRecommendation(null);
+      setRecommendationError(RECOMMENDATION_ERROR_MESSAGE);
+    } finally {
+      if (recommendationAbortControllerRef.current === abortController) {
+        recommendationAbortControllerRef.current = null;
+        setIsGeneratingRecommendation(false);
+      }
+    }
+  };
 
   const updateValue = (name: ScreeningFieldName, value: string) => {
     // Form mengirim nama field + value ke sini setiap user mengubah input.
@@ -87,6 +142,7 @@ export function useScreening() {
     }
 
     abortControllerRef.current?.abort();
+    clearRecommendationState();
 
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
@@ -95,13 +151,16 @@ export function useScreening() {
 
     try {
       // Values form diubah menjadi payload API terbaru, lalu dikirim ke endpoint screening.
+      const submittedValues = values;
       const apiResult = await requestScreeningPrediction(
-        createScreeningPayload(values),
+        createScreeningPayload(submittedValues),
         abortController.signal,
       );
 
       // Response API digabung dengan values form menjadi data siap-render untuk Result.
-      setResult(createScreeningResult(values, apiResult));
+      const nextResult = createScreeningResult(submittedValues, apiResult);
+      setResult(nextResult);
+      void generateRecommendation(submittedValues, nextResult);
     } catch (error) {
       if (isScreeningApiCanceled(error)) {
         return;
@@ -125,6 +184,7 @@ export function useScreening() {
     // Reset membatalkan request aktif dan mengembalikan UI ke kondisi awal.
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
+    clearRecommendationState();
     setValues(initialValues);
     setErrors({});
     setResult(null);
@@ -136,6 +196,7 @@ export function useScreening() {
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
+      recommendationAbortControllerRef.current?.abort();
     };
   }, []);
 
@@ -143,9 +204,12 @@ export function useScreening() {
     values,
     errors,
     result,
+    aiRecommendation,
     hasSubmitted,
     isSubmitting,
+    isGeneratingRecommendation,
     submitError,
+    recommendationError,
     updateValue,
     submitScreening,
     resetScreening,

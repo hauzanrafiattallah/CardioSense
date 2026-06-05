@@ -7,6 +7,11 @@ import type {
   ChatApiResponse,
   ChatMessage,
 } from "@/features/chatbot/types/Chatbot";
+import {
+  getScreeningChatContextEventDetail,
+  SCREENING_CHAT_CONTEXT_EVENT,
+} from "@/features/chatbot/utils/ScreeningContext";
+import type { ScreeningChatContext } from "@/features/screening/types/Screening";
 
 const CHAT_ERROR_MESSAGE =
   "Maaf, Asisten CardioSense sedang tidak tersedia. Untuk keluhan mendesak seperti nyeri dada berat, sesak napas, atau pingsan, segera hubungi layanan darurat atau fasilitas kesehatan terdekat.";
@@ -34,6 +39,8 @@ export function useChatbot() {
     initialAssistantMessage,
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [screeningContext, setScreeningContext] =
+    useState<ScreeningChatContext | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -56,7 +63,7 @@ export function useChatbot() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ messages: nextMessages }),
+        body: JSON.stringify({ messages: nextMessages, screeningContext }),
         signal: abortController.signal,
       });
 
@@ -89,7 +96,7 @@ export function useChatbot() {
         setIsTyping(false);
       }
     }
-  }, []);
+  }, [screeningContext]);
 
   const sendMessage = useCallback(
     (message?: string) => {
@@ -125,6 +132,32 @@ export function useChatbot() {
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScreeningContext = (event: Event) => {
+      const detail = getScreeningChatContextEventDetail(event);
+
+      if (!detail) {
+        return;
+      }
+
+      setScreeningContext(detail.context);
+      setInputValue(detail.prompt);
+      setIsOpen(true);
+    };
+
+    window.addEventListener(
+      SCREENING_CHAT_CONTEXT_EVENT,
+      handleScreeningContext,
+    );
+
+    return () => {
+      window.removeEventListener(
+        SCREENING_CHAT_CONTEXT_EVENT,
+        handleScreeningContext,
+      );
     };
   }, []);
 

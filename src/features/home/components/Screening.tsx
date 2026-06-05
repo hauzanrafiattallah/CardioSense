@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 import { Disclaimer } from "@/components/shared/Disclaimer";
 import { SectionTitle } from "@/components/shared/SectionTitle";
+import { SCREENING_CHAT_CONTEXT_EVENT } from "@/features/chatbot/utils/ScreeningContext";
 import {
   screeningContent,
   screeningFields,
@@ -11,6 +12,7 @@ import {
 import { Form } from "@/features/screening/components/Form";
 import { Result } from "@/features/screening/components/Result";
 import { useScreening } from "@/features/screening/hooks/UseScreening";
+import { createScreeningChatContext } from "@/features/screening/utils/Recommendation";
 
 export function Screening() {
   // Hook ini menyimpan state form, hasil prediksi, loading, error, dan aksi submit/reset.
@@ -18,13 +20,33 @@ export function Screening() {
     values,
     errors,
     result,
+    aiRecommendation,
     hasSubmitted,
     isSubmitting,
+    isGeneratingRecommendation,
     submitError,
+    recommendationError,
     updateValue,
     submitScreening,
     resetScreening,
   } = useScreening();
+
+  const handleAskAssistant = () => {
+    if (!result) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent(SCREENING_CHAT_CONTEXT_EVENT, {
+        detail: {
+          prompt:
+            aiRecommendation?.followUpPrompt ??
+            "Bantu jelaskan hasil skrining saya dan langkah yang perlu diprioritaskan.",
+          context: createScreeningChatContext(result, aiRecommendation),
+        },
+      }),
+    );
+  };
 
   return (
     <section id="screening" className="bg-white py-20 sm:py-24">
@@ -61,9 +83,13 @@ export function Screening() {
           {/* Result menerima hasil olahan hook untuk menampilkan status atau kartu risiko. */}
           <Result
             result={result}
+            aiRecommendation={aiRecommendation}
             hasSubmitted={hasSubmitted}
             isSubmitting={isSubmitting}
+            isGeneratingRecommendation={isGeneratingRecommendation}
             submitError={submitError}
+            recommendationError={recommendationError}
+            onAskAssistant={handleAskAssistant}
           />
         </div>
 

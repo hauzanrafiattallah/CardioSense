@@ -75,6 +75,42 @@ export type ScreeningApiResponse = {
   protective_factors: ScreeningApiFactor[];
 };
 
+export type ScreeningAiRecommendation = {
+  recommendation: string;
+  followUpPrompt: string;
+};
+
+export type ScreeningRecommendationContext = {
+  riskLevel: RiskLevel;
+  riskLabel: string;
+  normalizedRiskScore: number;
+  rawRiskScore: number;
+  profile: {
+    age: number;
+    gender: string;
+    bmi: number;
+    waistToHeightRatio: number;
+    abdominalCircumference: number;
+    totalCholesterol: number;
+    bloodPressure: string;
+    smokingStatus: string;
+    diabetesStatus: string;
+    physicalActivity: string;
+    familyHistory: string;
+  };
+  factors: string[];
+  baselineRecommendation: string;
+};
+
+export type ScreeningChatContext = {
+  riskLevel: RiskLevel;
+  riskLabel: string;
+  normalizedRiskScore: number;
+  summary: string;
+  recommendation: string;
+  factors: string[];
+};
+
 export type ScreeningResult = {
   eyebrow: string;
   title: string;

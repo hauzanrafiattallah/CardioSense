@@ -6,6 +6,10 @@ import Groq, {
 import type { ChatCompletionMessageParam } from "groq-sdk/resources/chat";
 
 import type { ChatRole } from "@/features/chatbot/types/Chatbot";
+import {
+  buildScreeningContextPrompt,
+  normalizeScreeningChatContext,
+} from "@/features/chatbot/utils/ScreeningContext";
 
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_MESSAGE_LENGTH = 900;
@@ -102,6 +106,10 @@ const CONTEXTUAL_FOLLOW_UP_TERMS = [
   "kapan",
   "boleh",
   "harus",
+  "jelaskan",
+  "lanjut",
+  "prioritas",
+  "rekomendasi",
 ] as const;
 
 const CLEARLY_OUT_OF_SCOPE_TERMS = [
@@ -146,6 +154,7 @@ type IncomingChatMessage = {
 
 type ChatRequestBody = {
   messages?: unknown;
+  screeningContext?: unknown;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -187,7 +196,10 @@ function getLatestUserMessage(messages: IncomingChatMessage[]) {
   return [...messages].reverse().find((message) => message.role === "user");
 }
 
-function shouldAnswerWithinCardioSense(messages: IncomingChatMessage[]) {
+function shouldAnswerWithinCardioSense(
+  messages: IncomingChatMessage[],
+  hasScreeningContext: boolean,
+) {
   // Filter murah sebelum call Groq supaya topik luar domain tidak memakai token LLM.
   const latestUserMessage = getLatestUserMessage(messages);
 
@@ -208,6 +220,13 @@ function shouldAnswerWithinCardioSense(messages: IncomingChatMessage[]) {
     return true;
   }
 
+  if (
+    hasScreeningContext &&
+    containsAnyTerm(latestContent, CONTEXTUAL_FOLLOW_UP_TERMS)
+  ) {
+    return true;
+  }
+
   const recentUserMessages = messages
     .filter((message) => message.role === "user")
     .slice(-3);
@@ -223,18 +242,31 @@ function shouldAnswerWithinCardioSense(messages: IncomingChatMessage[]) {
 
 function buildGroqMessages(
   messages: IncomingChatMessage[],
+  screeningContextPrompt: string | null,
 ): ChatCompletionMessageParam[] {
   // History user digabung dengan system prompt sebelum dikirim ke Groq.
-  return [
+  const groqMessages: ChatCompletionMessageParam[] = [
     {
       role: "system",
       content: CARDIOSENSE_SYSTEM_PROMPT,
     },
+  ];
+
+  if (screeningContextPrompt) {
+    groqMessages.push({
+      role: "system",
+      content: screeningContextPrompt,
+    });
+  }
+
+  groqMessages.push(
     ...messages.map((message) => ({
       role: message.role,
       content: message.content,
     })),
-  ];
+  );
+
+  return groqMessages;
 }
 
 function getSafeStatus(error: unknown) {
@@ -278,6 +310,10 @@ export async function POST(request: Request) {
 
   // History dari UI dipotong dan dibersihkan sebelum diteruskan ke Groq.
   const sanitizedMessages = sanitizeMessages(body.messages);
+  const screeningContext = normalizeScreeningChatContext(body.screeningContext);
+  const screeningContextPrompt = screeningContext
+    ? buildScreeningContextPrompt(screeningContext)
+    : null;
 
   if (!getLatestUserMessage(sanitizedMessages)) {
     return Response.json(
@@ -286,7 +322,12 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!shouldAnswerWithinCardioSense(sanitizedMessages)) {
+  if (
+    !shouldAnswerWithinCardioSense(
+      sanitizedMessages,
+      Boolean(screeningContext),
+    )
+  ) {
     return Response.json({
       message:
         "Maaf, saya hanya bisa membantu topik seputar CardioSense, skrining awal, faktor risiko, pencegahan, dan edukasi kesehatan kardiovaskular.",
@@ -302,7 +343,7 @@ export async function POST(request: Request) {
   try {
     // API internal meneruskan prompt + history chat ke Groq.
     const completion = await groq.chat.completions.create({
-      messages: buildGroqMessages(sanitizedMessages),
+      messages: buildGroqMessages(sanitizedMessages, screeningContextPrompt),
       model: process.env.GROQ_MODEL ?? DEFAULT_MODEL,
       max_completion_tokens: 450,
       temperature: 0.2,
