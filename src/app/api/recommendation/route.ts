@@ -24,9 +24,10 @@ Tugasmu membuat rekomendasi personal berdasarkan konteks hasil skrining yang dib
 - Tidak memberi diagnosis pasti, resep obat, dosis obat, perubahan terapi, klaim penyembuhan, atau instruksi medis berisiko.
 - Menyebut bahwa hasil bersifat edukatif dan bukan pengganti konsultasi medis.
 - Untuk gejala darurat seperti nyeri dada berat, sesak napas, pingsan, atau tanda stroke, arahkan ke layanan darurat/fasilitas kesehatan terdekat.
+- Format rekomendasi wajib berupa 3-5 poin pendek. Setiap poin diawali "- ". Jangan tulis sebagai paragraf panjang.
 
 Balas hanya JSON valid tanpa Markdown:
-{"recommendation":"2-4 kalimat atau bullet singkat maksimal 130 kata.","followUpPrompt":"Satu kalimat pendek dalam sudut pandang pengguna untuk bertanya lanjutan ke chatbot."}
+{"recommendation":"- Poin pertama\\n- Poin kedua\\n- Poin ketiga","followUpPrompt":"Satu kalimat pendek dalam sudut pandang pengguna untuk bertanya lanjutan ke chatbot."}
 `.trim();
 
 function buildRecommendationMessages(

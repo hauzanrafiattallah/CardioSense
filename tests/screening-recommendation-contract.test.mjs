@@ -7,6 +7,8 @@ import {
   createRecommendationCompletionOptions,
   normalizeRecommendationResponse,
   parseRecommendationCompletion,
+  formatRecommendationAsBullets,
+  getRecommendationBulletItems,
 } from "../src/features/screening/utils/Recommendation.ts";
 
 const completeValues = {
@@ -94,9 +96,52 @@ test("normalizes the recommendation route response shape", () => {
       followUpPrompt: "Saya ingin memahami hasil skrining saya lebih lanjut.",
     }),
     {
-      recommendation: "Fokus pada pemantauan tekanan darah dan aktivitas fisik.",
+      recommendation:
+        "- Fokus pada pemantauan tekanan darah dan aktivitas fisik.",
       followUpPrompt: "Saya ingin memahami hasil skrining saya lebih lanjut.",
     },
+  );
+});
+
+test("formats paragraph recommendation as bullet points", () => {
+  assert.equal(
+    formatRecommendationAsBullets(
+      "Anda berada pada risiko sedang dengan diabetes. Mulailah memantau tekanan darah, gula darah, dan kolesterol setiap 3-6 bulan. Tingkatkan aktivitas fisik dan berhenti merokok. Hasil ini bersifat edukatif dan bukan pengganti konsultasi medis.",
+    ),
+    [
+      "- Anda berada pada risiko sedang dengan diabetes.",
+      "- Mulailah memantau tekanan darah, gula darah, dan kolesterol setiap 3-6 bulan.",
+      "- Tingkatkan aktivitas fisik dan berhenti merokok.",
+      "- Hasil ini bersifat edukatif dan bukan pengganti konsultasi medis.",
+    ].join("\n"),
+  );
+});
+
+test("normalizes recommendation response into bullet points", () => {
+  assert.deepEqual(
+    normalizeRecommendationResponse({
+      recommendation:
+        "Pantau tekanan darah secara berkala. Tingkatkan aktivitas fisik.",
+      followUpPrompt: "Saya ingin memahami hasil skrining saya lebih lanjut.",
+    }),
+    {
+      recommendation:
+        "- Pantau tekanan darah secara berkala.\n- Tingkatkan aktivitas fisik.",
+      followUpPrompt: "Saya ingin memahami hasil skrining saya lebih lanjut.",
+    },
+  );
+});
+
+test("extracts recommendation bullet items for UI rendering", () => {
+  assert.deepEqual(
+    getRecommendationBulletItems(
+      "- Pantau tekanan darah.\n- Tingkatkan aktivitas fisik.\n- Konsultasikan bila ada keluhan.",
+    ),
+    [
+      "Pantau tekanan darah.",
+      "Tingkatkan aktivitas fisik.",
+      "Konsultasikan bila ada keluhan.",
+    ],
   );
 });
 
@@ -117,7 +162,7 @@ test("parses JSON recommendation content returned by the model", () => {
       '```json\n{"recommendation":"Prioritaskan kontrol tekanan darah.","followUpPrompt":"Bantu jelaskan prioritas hasil saya."}\n```',
     ),
     {
-      recommendation: "Prioritaskan kontrol tekanan darah.",
+      recommendation: "- Prioritaskan kontrol tekanan darah.",
       followUpPrompt: "Bantu jelaskan prioritas hasil saya.",
     },
   );

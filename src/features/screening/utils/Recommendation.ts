@@ -40,6 +40,7 @@ const familyHistoryLabels: Record<string, string> = {
 };
 
 const RECOMMENDATION_COMPLETION_TOKEN_BUDGET = 700;
+const MAX_RECOMMENDATION_BULLETS = 5;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -61,6 +62,42 @@ function getLabel(value: string, labels: Record<string, string>) {
 
 function isRiskLevel(value: unknown): value is RiskLevel {
   return value === "low" || value === "medium" || value === "high";
+}
+
+function cleanRecommendationBullet(value: string) {
+  return value
+    .trim()
+    .replace(/^[-*•]\s+/, "")
+    .replace(/^\d+[.)]\s+/, "")
+    .trim();
+}
+
+export function formatRecommendationAsBullets(value: string) {
+  const trimmedValue = value.trim();
+  const existingBulletLines = trimmedValue
+    .split(/\r?\n/)
+    .map(cleanRecommendationBullet)
+    .filter(Boolean);
+  const rawItems =
+    existingBulletLines.length > 1
+      ? existingBulletLines
+      : trimmedValue
+          .split(/(?<=[.!?])\s+/)
+          .map(cleanRecommendationBullet)
+          .filter(Boolean);
+
+  return rawItems
+    .slice(0, MAX_RECOMMENDATION_BULLETS)
+    .map((item) => `- ${item}`)
+    .join("\n");
+}
+
+export function getRecommendationBulletItems(value: string) {
+  return value
+    .split(/\r?\n/)
+    .map(cleanRecommendationBullet)
+    .filter(Boolean)
+    .slice(0, MAX_RECOMMENDATION_BULLETS);
 }
 
 function hasScreeningFormShape(value: unknown): value is ScreeningFormValues {
@@ -189,7 +226,10 @@ export function normalizeRecommendationResponse(
   }
 
   return {
-    recommendation: recommendation.slice(0, 1_500),
+    recommendation: formatRecommendationAsBullets(recommendation).slice(
+      0,
+      1_500,
+    ),
     followUpPrompt: followUpPrompt.slice(0, 240),
   };
 }

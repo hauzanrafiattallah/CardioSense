@@ -18,6 +18,7 @@ import type {
   ScreeningAiRecommendation,
   ScreeningResult,
 } from "@/features/screening/types/Screening";
+import { getRecommendationBulletItems } from "@/features/screening/utils/Recommendation";
 import { getRiskLevelMeta } from "@/features/screening/utils/Risk";
 import { cn } from "@/lib/Utils";
 
@@ -167,6 +168,9 @@ export function Result({
 
   // Setelah result tersedia, metadata risiko menentukan warna badge dan progress bar.
   const riskMeta = getRiskLevelMeta(result.level);
+  const recommendationItems = aiRecommendation
+    ? getRecommendationBulletItems(aiRecommendation.recommendation)
+    : [];
 
   return (
     <motion.div
@@ -271,9 +275,17 @@ export function Result({
             ) : null}
 
             {aiRecommendation ? (
-              <p className="whitespace-pre-line text-sm leading-6 text-[#374151]">
-                {aiRecommendation.recommendation}
-              </p>
+              <ul className="grid gap-2 text-sm leading-6 text-[#374151]">
+                {recommendationItems.map((item, index) => (
+                  <li key={`${item}-${index}`} className="flex items-start gap-2">
+                    <span
+                      className="mt-2 size-1.5 shrink-0 rounded-full bg-[#C51624]"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             ) : null}
 
             {!isGeneratingRecommendation && !aiRecommendation ? (
