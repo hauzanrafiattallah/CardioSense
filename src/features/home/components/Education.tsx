@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 
 import { MotionCard } from "@/components/shared/MotionCard";
 import { SectionTitle } from "@/components/shared/SectionTitle";
@@ -9,7 +8,6 @@ import { Card } from "@/components/ui/card";
 import {
   educationCards,
   educationContent,
-  educationLinkLabel,
 } from "@/features/home/data/HomeData";
 
 export function Education() {
@@ -66,13 +64,6 @@ export function Education() {
                   <p className="mt-4 leading-7 text-[#6B7280]">
                     {topic.text}
                   </p>
-                  <a
-                    href="#education"
-                    className="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-bold text-[#C51624] transition-colors hover:text-[#F43F4E]"
-                  >
-                    {educationLinkLabel}
-                    <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </a>
                 </Card>
               </MotionCard>
             );

@@ -169,7 +169,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.96 }}
             transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-4 top-22 z-40 overflow-hidden rounded-3xl border border-[#FAD7DD]/70 bg-white/96 shadow-[0_24px_64px_rgba(197,22,36,0.14)] backdrop-blur-2xl lg:hidden"
+            className="fixed inset-x-4 top-26 z-40 overflow-hidden rounded-3xl border border-[#FAD7DD]/70 bg-white/96 shadow-[0_24px_64px_rgba(197,22,36,0.14)] backdrop-blur-2xl lg:hidden"
           >
             <div className="p-3">
               {navItems.map((item, i) => (
