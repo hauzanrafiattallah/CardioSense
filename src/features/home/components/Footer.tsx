@@ -15,7 +15,7 @@ export function Footer() {
             </span>
             <span className="font-heading text-xl font-bold">CardioSense</span>
           </a>
-          <p className="mt-5 max-w-sm leading-7 text-white/68">
+          <p className="mt-5 max-w-sm leading-7 text-white/94">
             {footerContent.description}
           </p>
         </div>
@@ -29,7 +29,7 @@ export function Footer() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-white/68 transition-colors hover:text-white"
+                className="text-sm text-white/94 transition-colors hover:text-white"
               >
                 {link.label}
               </a>
@@ -46,7 +46,7 @@ export function Footer() {
           </Disclaimer>
         </div>
       </div>
-      <div className="mx-auto mt-10 max-w-7xl px-4 text-sm text-white/48 sm:px-6 lg:px-8">
+      <div className="mx-auto mt-10 max-w-7xl px-4 text-sm text-white/90 sm:px-6 lg:px-8">
         {footerContent.copyright}
       </div>
     </footer>

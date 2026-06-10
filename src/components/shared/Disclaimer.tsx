@@ -18,7 +18,7 @@ export function Disclaimer({
       className={cn(
         "flex items-start gap-3 rounded-3xl text-sm leading-6",
         variant === "dark"
-          ? "border border-white/10 bg-white/6 p-5 text-white/68"
+          ? "border border-white/10 bg-white/6 p-5 text-white/94"
           : "border border-[#FAD7DD]/80 bg-[#FFF1F3] p-4 text-[#6B7280]",
         className,
       )}
@@ -26,7 +26,7 @@ export function Disclaimer({
       <Info
         className={cn(
           "mt-0.5 size-5 shrink-0",
-          variant === "dark" ? "text-white/78" : "text-[#C51624]",
+          variant === "dark" ? "text-white/94" : "text-[#C51624]",
         )}
       />
       <p>{children}</p>
