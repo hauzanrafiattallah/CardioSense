@@ -36,8 +36,13 @@ body {
 }
 
 ::selection {
-  background: rgba(244, 63, 78, 0.2);
-  color: #c51624;
+  background: color-mix(in srgb, var(--cardio-cyan) 32%, transparent);
+  color: var(--foreground);
+}
+
+::-moz-selection {
+  background: color-mix(in srgb, var(--cardio-cyan) 32%, transparent);
+  color: var(--foreground);
 }
 
 .text-balance {
