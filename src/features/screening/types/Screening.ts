@@ -52,7 +52,7 @@ export type ScreeningApiRequest = {
   weight: number;
   height: number;
   abdominal_circumference: number;
-  total_cholesterol: number;
+  total_cholesterol: number | null;
   smoking_status: number;
   diabetes_status: number;
   physical_activity_level: number;
@@ -91,7 +91,7 @@ export type ScreeningRecommendationContext = {
     bmi: number;
     waistToHeightRatio: number;
     abdominalCircumference: number;
-    totalCholesterol: number;
+    totalCholesterol: number | null;
     bloodPressure: string;
     smokingStatus: string;
     diabetesStatus: string;

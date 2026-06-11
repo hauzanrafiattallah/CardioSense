@@ -45,6 +45,7 @@ export const riskLevelMeta = {
 const modelFactorLabels: Record<string, string> = {
   "Body Mass Index": "Indeks Massa Tubuh",
   "Total Cholesterol": "Total Kolesterol",
+  "Missing Total Cholesterol": "Total Kolesterol Belum Diisi",
   "Smoking Status": "Status Merokok",
   Diabetes: "Diabetes",
   "Physical Activity": "Aktivitas Fisik",
@@ -103,6 +104,22 @@ function validateNumericField(
   }
 }
 
+function validateOptionalNumericField(
+  values: ScreeningFormValues,
+  errors: ScreeningErrors,
+  name: ScreeningFieldName,
+  min: number,
+  max: number,
+  rangeMessage: string,
+) {
+  const rawValue = values[name].trim();
+  const value = toNumber(rawValue);
+
+  if (rawValue && (!Number.isFinite(value) || value < min || value > max)) {
+    errors[name] = rangeMessage;
+  }
+}
+
 export function validateScreeningValues(values: ScreeningFormValues) {
   // Validasi lokal mencegah request API saat input belum lengkap atau tidak masuk akal.
   const errors: ScreeningErrors = {};
@@ -144,14 +161,13 @@ export function validateScreeningValues(values: ScreeningFormValues) {
     "Lingkar perut wajib diisi.",
     "Masukkan lingkar perut 40-180 cm.",
   );
-  validateNumericField(
+  validateOptionalNumericField(
     values,
     errors,
     "totalCholesterol",
     100,
     400,
-    "Total kolesterol wajib diisi.",
-    "Masukkan total kolesterol 100-400 mg/dL.",
+    "Jika diisi, masukkan total kolesterol 100-400 mg/dL.",
   );
   requireSelectField(values, errors, "smokingStatus", "Pilih status merokok.");
   requireSelectField(values, errors, "diabetesStatus", "Pilih status diabetes.");
@@ -234,7 +250,7 @@ function getScreeningFactors(values: ScreeningFormValues) {
     });
   }
 
-  if (totalCholesterol >= 200) {
+  if (Number.isFinite(totalCholesterol) && totalCholesterol >= 200) {
     factors.push({
       icon: ShieldAlert,
       tone: "education",
@@ -296,6 +312,10 @@ function formatImpact(impact: number) {
 function formatModelValue(factor: ScreeningApiFactor) {
   if (factor.feature === "Sex") {
     return factor.value === 0 ? "Laki-laki" : "Perempuan";
+  }
+
+  if (factor.feature === "Missing Total Cholesterol") {
+    return factor.value === 1 ? "Belum diisi" : "Diisi";
   }
 
   if (factor.feature === "Smoking Status") {

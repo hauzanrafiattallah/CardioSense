@@ -50,6 +50,18 @@ function toNumber(value: string) {
   return Number.parseFloat(value);
 }
 
+function toNullableNumber(value: string) {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return null;
+  }
+
+  const parsedValue = Number.parseFloat(trimmedValue);
+
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
 function roundTo(value: number, digits: number) {
   const multiplier = 10 ** digits;
 
@@ -192,7 +204,7 @@ export function createRecommendationRequestContext(
       bmi: roundTo(bmi, 1),
       waistToHeightRatio: roundTo(abdominalCircumference / height, 2),
       abdominalCircumference,
-      totalCholesterol: toNumber(values.totalCholesterol),
+      totalCholesterol: toNullableNumber(values.totalCholesterol),
       bloodPressure: `${systolicPressure}/${diastolicPressure} mmHg`,
       smokingStatus: getLabel(values.smokingStatus, smokingStatusLabels),
       diabetesStatus: getLabel(values.diabetesStatus, diabetesStatusLabels),

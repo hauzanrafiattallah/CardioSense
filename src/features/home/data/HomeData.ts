@@ -206,9 +206,9 @@ export const screeningFields: ScreeningField[] = [
   },
   {
     name: "totalCholesterol",
-    label: "Total Kolesterol (mg/dL)",
+    label: "Total Kolesterol (mg/dL, opsional)",
     type: "number",
-    placeholder: "Contoh: 200",
+    placeholder: "Kosongkan bila belum ada",
     min: 100,
     max: 400,
     inputMode: "numeric",

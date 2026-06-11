@@ -89,6 +89,18 @@ test("creates a safe recommendation context from screening values and result", (
   );
 });
 
+test("uses null total cholesterol in recommendation context when omitted", () => {
+  const context = createRecommendationRequestContext(
+    {
+      ...completeValues,
+      totalCholesterol: "",
+    },
+    screeningResult,
+  );
+
+  assert.equal(context.profile.totalCholesterol, null);
+});
+
 test("normalizes the recommendation route response shape", () => {
   assert.deepEqual(
     normalizeRecommendationResponse({

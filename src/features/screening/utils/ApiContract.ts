@@ -57,6 +57,12 @@ function toCode<T extends Record<string, number>>(value: string, codes: T) {
   return value in codes ? codes[value as keyof T] : Number.NaN;
 }
 
+function toOptionalNumber(value: string) {
+  const trimmedValue = value.trim();
+
+  return trimmedValue ? Number.parseFloat(trimmedValue) : null;
+}
+
 function normalizeFactor(value: unknown): ScreeningApiFactor | null {
   if (!isRecord(value) || typeof value.feature !== "string") {
     return null;
@@ -99,7 +105,7 @@ export function createLatestScreeningPayload(
     weight: Number.parseFloat(values.weight),
     height: Number.parseFloat(values.height),
     abdominal_circumference: Number.parseFloat(values.abdominalCircumference),
-    total_cholesterol: Number.parseFloat(values.totalCholesterol),
+    total_cholesterol: toOptionalNumber(values.totalCholesterol),
     smoking_status: toCode(values.smokingStatus, smokingStatusCodes),
     diabetes_status: toCode(values.diabetesStatus, diabetesStatusCodes),
     physical_activity_level: toCode(

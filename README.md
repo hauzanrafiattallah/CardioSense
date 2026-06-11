@@ -120,6 +120,7 @@ Contoh request:
 Kode nilai:
 
 - `sex`: `0` laki-laki, `1` perempuan.
+- `total_cholesterol`: angka mg/dL bila tersedia, atau `null` bila belum ada hasil lab.
 - `smoking_status`, `diabetes_status`, `family_history_cvd`: `0` tidak, `1` ya.
 - `physical_activity_level`: `1` jarang, `2` kadang-kadang, `3` rutin.
 

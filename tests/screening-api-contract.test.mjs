@@ -1,10 +1,29 @@
 import assert from "node:assert/strict";
+import { registerHooks } from "node:module";
 import { test } from "node:test";
+import { pathToFileURL } from "node:url";
 
 import {
   createLatestScreeningPayload,
   normalizeLatestScreeningResponse,
 } from "../src/features/screening/utils/ApiContract.ts";
+
+registerHooks({
+  resolve(specifier, context, nextResolve) {
+    if (!specifier.startsWith("@/")) {
+      return nextResolve(specifier, context);
+    }
+
+    return nextResolve(
+      pathToFileURL(`./src/${specifier.slice(2)}.ts`).href,
+      context,
+    );
+  },
+});
+
+const { createScreeningResult, validateScreeningValues } = await import(
+  "../src/features/screening/utils/Risk.ts"
+);
 
 const completeValues = {
   age: "45",
@@ -38,6 +57,39 @@ test("creates the latest FastAPI payload from screening form values", () => {
   });
 });
 
+test("sends null total cholesterol when the screening form leaves it empty", () => {
+  assert.deepEqual(
+    createLatestScreeningPayload({
+      ...completeValues,
+      totalCholesterol: "",
+    }),
+    {
+      sex: 0,
+      age: 45,
+      weight: 72.5,
+      height: 170,
+      abdominal_circumference: 91,
+      total_cholesterol: null,
+      smoking_status: 1,
+      diabetes_status: 1,
+      physical_activity_level: 1,
+      family_history_cvd: 1,
+      systolic_bp: 138,
+      diastolic_bp: 86,
+    },
+  );
+});
+
+test("allows total cholesterol to be omitted during local validation", () => {
+  assert.equal(
+    validateScreeningValues({
+      ...completeValues,
+      totalCholesterol: "",
+    }).totalCholesterol,
+    undefined,
+  );
+});
+
 test("creates the same payload shape as the backend example", () => {
   assert.deepEqual(
     createLatestScreeningPayload({
@@ -68,6 +120,33 @@ test("creates the same payload shape as the backend example", () => {
       systolic_bp: 104,
       diastolic_bp: 77,
     },
+  );
+});
+
+test("renders missing cholesterol factor with a readable Indonesian label", () => {
+  const result = createScreeningResult(
+    {
+      ...completeValues,
+      totalCholesterol: "",
+    },
+    {
+      raw_risk_score: 19,
+      normalized_risk_score: 72,
+      risk_level: "High",
+      top_risk_factors: [
+        {
+          feature: "Missing Total Cholesterol",
+          value: 1,
+          impact: 0.314,
+        },
+      ],
+      protective_factors: [],
+    },
+  );
+
+  assert.equal(
+    result.factors[0].text,
+    "Total Kolesterol Belum Diisi: Belum diisi (kontribusi +0.314)",
   );
 });
 
