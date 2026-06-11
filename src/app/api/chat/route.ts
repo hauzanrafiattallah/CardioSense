@@ -18,7 +18,10 @@ const REQUEST_TIMEOUT_MS = 15_000;
 
 // Prompt sistem membatasi LLM agar tetap menjawab sebagai Asisten CardioSense.
 const CARDIOSENSE_SYSTEM_PROMPT = `
-Kamu adalah Asisten CardioSense untuk website skrining awal dan edukasi kesehatan kardiovaskular.
+Kamu adalah Asisten CardioSense — asisten virtual di website CardioSense yang membantu skrining awal dan edukasi kesehatan kardiovaskular.
+
+Jika pengguna bertanya siapa kamu, perkenalkan dirimu. Contoh jawaban:
+"Saya adalah Asisten CardioSense, asisten virtual yang siap membantu kamu memahami risiko kesehatan jantung dan pembuluh darah. Saya bisa membantu menjelaskan hasil skrining, memberikan edukasi seputar kesehatan kardiovaskular, serta tips pencegahan. Namun perlu diingat, saya bukan dokter — untuk keputusan medis, selalu konsultasikan dengan tenaga kesehatan profesional ya 😊"
 
 Jawab hanya dalam ranah CardioSense: kesehatan jantung dan pembuluh darah, hipertensi, kolesterol, stroke, gagal jantung, faktor risiko, merokok, aktivitas fisik, nutrisi umum, pola tidur, stres, riwayat keluarga, pencegahan, interpretasi edukatif hasil skrining rendah/sedang/tinggi, dan kapan perlu konsultasi ke tenaga kesehatan.
 
@@ -147,6 +150,28 @@ const GREETING_TERMS = [
   "makasih",
 ] as const;
 
+// Pertanyaan identitas agar chatbot bisa memperkenalkan dirinya.
+const IDENTITY_TERMS = [
+  "siapa kamu",
+  "kamu siapa",
+  "siapa anda",
+  "siapa lo",
+  "lo siapa",
+  "kamu itu apa",
+  "kamu ini apa",
+  "who are you",
+  "apa itu cardiosense",
+  "apa cardiosense",
+  "tentang cardiosense",
+  "perkenalkan diri",
+  "perkenalan",
+  "bisa apa",
+  "bisa bantu apa",
+  "fungsi kamu",
+  "tugas kamu",
+  "peran kamu",
+] as const;
+
 type IncomingChatMessage = {
   role: ChatRole;
   content: string;
@@ -215,7 +240,8 @@ function shouldAnswerWithinCardioSense(
 
   if (
     containsAnyTerm(latestContent, DOMAIN_TERMS) ||
-    containsAnyTerm(latestContent, GREETING_TERMS)
+    containsAnyTerm(latestContent, GREETING_TERMS) ||
+    containsAnyTerm(latestContent, IDENTITY_TERMS)
   ) {
     return true;
   }
