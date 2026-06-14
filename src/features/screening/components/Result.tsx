@@ -5,6 +5,7 @@ import {
   CircleAlert,
   CircleGauge,
   ClipboardCheck,
+  Info,
   LoaderCircle,
   MessageCircle,
   Sparkles,
@@ -155,9 +156,12 @@ export function Result({
 
             {/* Disclaimer */}
             <div className="mt-auto pt-5">
-              <div className="rounded-2xl border border-[#FAD7DD]/80 bg-[#FFF8F9] px-4 py-3 text-xs leading-5 text-[#9CA3AF]">
-                ⚠️ Hasil bersifat edukatif. Bukan pengganti diagnosis medis
-                profesional.
+              <div className="flex items-start gap-2.5 rounded-2xl border border-[#FAD7DD]/80 bg-[#FFF8F9] px-4 py-3 text-xs leading-5 text-[#6B7280]">
+                <Info className="mt-0.5 size-4 shrink-0 text-[#C51624]" />
+                <span>
+                  Hasil bersifat edukatif. Bukan pengganti diagnosis medis
+                  profesional.
+                </span>
               </div>
             </div>
           </div>
