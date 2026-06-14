@@ -101,7 +101,7 @@ export function Form({
               >
                 <label
                   htmlFor={field.name}
-                  className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-[#6B7280]"
+                  className="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-[#6B7280] sm:min-h-[32px]"
                 >
                   {field.label}
                 </label>
