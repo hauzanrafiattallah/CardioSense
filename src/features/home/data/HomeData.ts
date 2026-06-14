@@ -264,9 +264,9 @@ export const screeningFields: ScreeningField[] = [
   },
   {
     name: "familyHistory",
-    label: "Riwayat Keluarga",
+    label: "Riwayat Penyakit Jantung Keluarga",
     type: "select",
-    placeholder: "Pilih riwayat keluarga",
+    placeholder: "Pilih riwayat",
     options: [
       { label: "Tidak ada", value: "no" },
       { label: "Ada", value: "yes" },

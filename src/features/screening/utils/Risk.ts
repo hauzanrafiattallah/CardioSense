@@ -181,7 +181,7 @@ export function validateScreeningValues(values: ScreeningFormValues) {
     values,
     errors,
     "familyHistory",
-    "Pilih riwayat keluarga.",
+    "Pilih riwayat penyakit jantung keluarga.",
   );
   validateNumericField(
     values,
